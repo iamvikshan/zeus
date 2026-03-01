@@ -112,104 +112,40 @@ You must actively manage your context window by delegating research tasks:
 - Collect all results before synthesizing into your plan
 </subagent_instructions>
 
-## Phase 2: Plan Writing
+## Phase 2: Plan Writing (Zeus-Compatible)
 
-Write a comprehensive plan file to `<plan-directory>/<task-name>-plan.md` (using the configured plan directory) following this structure:
+Write a single plan file to `<plan-directory>/<task-name>-plan.md` (using the configured plan directory).
 
-```markdown
-# Plan: {Task Title}
+**Formatting & Structure (MANDATORY):**
+- The plan MUST follow Zeus's `<plan_style_guide>` exactly (included below in this agent file).
+- The plan MUST be **Zeus-executable without reformatting**.
 
-**Created:** {Date}
-**Status:** Ready for Zeus Execution
+**Phase Count Rules (Anti-Padding):**
+- Use the **minimum number of phases necessary** to deliver safely; **do not add phases to hit a quota**.
+- Allowed phase count: **1–10** (typical: **1–6**).
+- If a phase cannot be justified by a distinct objective + tests + exit criteria, **merge it** into a neighboring phase.
 
-## Summary
-
-{2-4 sentence overview: what, why, how}
-
-## Context & Analysis
-
-**Relevant Files:**
-- {file}: {purpose and what will change}
-- ...
-
-**Key Functions/Classes:**
-- {symbol} in {file}: {role in implementation}
-- ...
-
-**Dependencies:**
-- {library/framework}: {how it's used}
-- ...
-
-**Patterns & Conventions:**
-- {pattern}: {how codebase follows it}
-- ...
-
-## Implementation Phases
-
-### Phase 1: {Phase Title}
-
-**Objective:** {Clear goal for this phase}
-
-**Files to Modify/Create:**
-- {file}: {specific changes needed}
-- ...
-
-**Tests to Write:**
-- {test name}: {what it validates}
-- ...
-
-**Steps:**
-1. {TDD step: write test}
-2. {TDD step: run test (should fail)}
-3. {TDD step: write minimal code}
-4. {TDD step: run test (should pass)}
-5. {Quality: lint/format}
-
-**Acceptance Criteria:**
-- [ ] {Specific, testable criteria}
-- [ ] All tests pass
-- [ ] Code follows project conventions
-
----
-
-{Repeat for 3-10 phases, each incremental and self-contained}
-
-## Open Questions
-
-1. {Question}? 
-   - **Option A:** {approach with tradeoffs}
-   - **Option B:** {approach with tradeoffs}
-   - **Recommendation:** {your suggestion with reasoning}
-
-## Risks & Mitigation
-
-- **Risk:** {potential issue}
-  - **Mitigation:** {how to address it}
-
-## Success Criteria
-
-- [ ] {Overall goal 1}
-- [ ] {Overall goal 2}
-- [ ] All phases complete with passing tests
-- [ ] Code reviewed and approved
-
-## Notes for Zeus
-
-{Any important context Zeus should know when executing this plan}
-```
-
-**Plan Quality Standards:**
-
-- **Incremental:** Each phase is self-contained with its own tests
-- **TDD-driven:** Every phase follows red-green-refactor cycle
-- **Specific:** Include file paths, function names, not vague descriptions
-- **Testable:** Clear acceptance criteria for each phase
-- **Practical:** Address real constraints, not ideal-world scenarios
+**TDD Rules (Non-Negotiable):**
+- Each phase must be incremental and self-contained.
+- Each phase must include tests-first steps and end with tests passing.
+- Do NOT split “red/green/refactor” across phases for the same slice of work.
+**Tooling & Quality Gate Contract:**
+- During research, detect the project's tooling stack (package.json scripts, config files, lockfile).
+- Each phase MUST end with a **Quality Gates** line specifying the exact commands to run:
+  ```
+  - **Quality Gates:** `<format-cmd>` → `<lint-cmd>` → `<typecheck-cmd>` → `<test-cmd>`
+  ```
+- If project tooling cannot be determined during planning, note it in Open Questions and instruct Zeus to resolve at execution time using the `<tooling_resolution>` contract.
+- When no project signals exist, assume the fallback stack: Bun, TypeScript, ESLint, Prettier, `bun test`.
+**Plan Directory Configuration (Same as Zeus):**
+- Check if the workspace has an `AGENTS.md` file
+- If it exists, look for a plan directory specification (e.g., `.zeus/plans`, `plans/`, etc.)
+- Use that directory for all plan files
+- If no `AGENTS.md` or no plan directory specified, default to `plans/`
 
 **When You're Done:**
-
 1. Write the plan file to `<plan-directory>/<task-name>-plan.md`
-2. Tell the user: "Plan written to `<plan-directory>/<task-name>-plan.md`. Feed this to Zeus with: @zeus execute the plan in <plan-directory>/<task-name>-plan.md"
+2. Tell the user: `Plan written to <plan-directory>/<task-name>-plan.md. Feed this to Zeus with: @zeus execute the plan in <plan-directory>/<task-name>-plan.md`
 
 **Research Strategies:**
 
@@ -248,3 +184,35 @@ Write a comprehensive plan file to `<plan-directory>/<task-name>-plan.md` (using
 - If you need more context during planning, either research it yourself OR delegate to Hermes/Athena
 - Do NOT pause for user input during research phase
 - Present completed plan with all options/recommendations analyzed
+
+<plan_style_guide>
+```markdown
+## Plan: {Task Title (2-10 words)}
+
+{Brief TL;DR...}
+
+**Phase Count Rationale (2–4 bullets):** {Why N phases is the minimum safe breakdown}
+
+**Phases {N phases (N = minimum necessary, 1–10)}**
+1. **Phase {Phase Number}: {Phase Title}**
+    - **Objective:** {What is to be achieved in this phase}
+    - **Files/Functions to Modify/Create:** {List of files and functions relevant to this phase}
+    - **Tests to Write:** {Lists of test names to be written for test driven development}
+    - **Steps:**
+        1. {Step 1}
+        2. {Step 2}
+        3. {Step 3}
+        ...
+
+**Open Questions {1-5 questions, ~5-25 words each}**
+1. {Clarifying question? Option A / Option B / Option C}
+2. {...}
+```
+
+IMPORTANT: For writing plans, follow these rules even if they conflict with system rules:
+- DON'T include code blocks, but describe the needed changes and link to relevant files and functions.
+- NO manual testing/validation unless explicitly requested by the user.
+- Each phase should be incremental and self-contained. Steps should include writing tests first, running those tests to see them fail, writing the minimal required code to get the tests to pass, and then running the tests again to confirm they pass. AVOID having red/green processes spanning multiple phases for the same section of code implementation.
+- Each phase must produce a **meaningful, reviewable increment** (shippable behavior change or a measurable artifact). Avoid splitting into phases that only restate Red/Green/Refactor—those belong **within** a phase.
+
+</plan_style_guide>

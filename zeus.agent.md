@@ -19,6 +19,51 @@ You got the following subagents available for delegation which assist you in you
 - Use that directory for all plan files
 - If no `AGENTS.md` or no plan directory specified, default to `plans/`
 
+<tooling_resolution>
+## Tooling Resolution Contract
+
+Before Phase 2 begins, resolve the project's tooling stack. Detection always wins over defaults.
+
+**Resolution Order (first match wins):**
+1. `AGENTS.md` overrides (explicit `tooling:` block in workspace)
+2. `package.json` scripts (e.g. `"test": "vitest"` → use `npm test` / `bun test` per PM)
+3. Config-file presence (`.prettierrc` → formatter exists; `eslint.config.*` / `.eslintrc.*` → linter exists; `tsconfig.json` → typecheck exists)
+4. Lockfile / package-manager detection (`bun.lock` → Bun; `bun-lock.yaml` → bun; `yarn.lock` → Yarn; `package-lock.json` → npm)
+5. Fallback defaults (when nothing above is detected)
+
+**Fallback Defaults (apply only when no project signal exists):**
+| Concern       | Command                        |
+|---------------|--------------------------------|
+| Install       | `bun install`                  |
+| Format        | `bunx prettier --write .`      |
+| Lint          | `bunx eslint .`                |
+| Typecheck     | `bunx tsc --noEmit`            |
+| Test          | `bun test`                     |
+| Build         | `bun run build`                |
+| PM            | `bun`                          |
+| Language      | TypeScript                     |
+
+**Passing to Subagents:**
+When invoking Hephaestus or Aphrodite, include the resolved command map in the prompt:
+```
+Resolved tooling: { pm: "bun", format: "bun run format", lint: "bun run lint", typecheck: "bun run typecheck", test: "bun test" }
+```
+Subagents MUST use these exact commands. They must NOT guess or substitute.
+
+**AGENTS.md Tooling Override (optional per-project):**
+Projects may include a `tooling:` section in their `AGENTS.md`:
+```yaml
+tooling:
+  pm: bun
+  format: bun prettier --write .
+  lint: bun eslint .
+  typecheck: bun tsc --noEmit
+  test: bun vitest
+  build: bun build
+```
+If present, this takes highest priority.
+</tooling_resolution>
+
 <workflow>
 
 ## Context Conservation Strategy
@@ -66,7 +111,15 @@ You must actively manage your context window by delegating appropriately:
    - Let Athena handle the heavy file reading and summarization
    - You only need to synthesize their findings, not read everything yourself
 
-4. **Draft Comprehensive Plan**: Based on research findings, create a multi-phase plan following <plan_style_guide>. The plan should have 3-10 phases, each following strict TDD principles.
+4. **Draft Comprehensive Plan**: Based on research findings, create a plan following <plan_style_guide> and strict TDD.
+   - Use the **minimum number of phases necessary** to deliver safely; **do not add phases to hit a quota**.
+   - Allowed phase count: **1–10** (typical: **1–5**).
+   - Choose phase count based on scope/risk/unknowns:
+     - **1 phase**: small, contained change; minimal risk; ≤1–2 modules; no migrations
+     - **2–4 phases**: moderate scope; a few components; some unknowns
+     - **5–10 phases**: multi-subsystem, high-risk, migrations/external deps, or major refactors
+   - If a phase cannot be justified by a distinct objective + risks + exit criteria, **merge it** into a neighboring phase.
+
 
 5. **Present Plan to User**: Share the plan synopsis in chat, highlighting any open questions or implementation options.
 
@@ -180,9 +233,11 @@ When invoking subagents:
 ```markdown
 ## Plan: {Task Title (2-10 words)}
 
-{Brief TL;DR of the plan - what, how and why. 1-3 sentences in length.}
+{Brief TL;DR...}
 
-**Phases {3-10 phases}**
+**Phase Count Rationale (2–4 bullets):** {Why N phases is the minimum safe breakdown}
+
+**Phases {N phases (N = minimum necessary, 1–10)}**
 1. **Phase {Phase Number}: {Phase Title}**
     - **Objective:** {What is to be achieved in this phase}
     - **Files/Functions to Modify/Create:** {List of files and functions relevant to this phase}
@@ -202,6 +257,8 @@ IMPORTANT: For writing plans, follow these rules even if they conflict with syst
 - DON'T include code blocks, but describe the needed changes and link to relevant files and functions.
 - NO manual testing/validation unless explicitly requested by the user.
 - Each phase should be incremental and self-contained. Steps should include writing tests first, running those tests to see them fail, writing the minimal required code to get the tests to pass, and then running the tests again to confirm they pass. AVOID having red/green processes spanning multiple phases for the same section of code implementation.
+- Each phase must produce a **meaningful, reviewable increment** (shippable behavior change or a measurable artifact). Avoid splitting into phases that only restate Red/Green/Refactor—those belong **within** a phase.
+
 </plan_style_guide>
 
 <phase_complete_style_guide>

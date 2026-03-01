@@ -40,7 +40,8 @@ Execute the specific frontend implementation task provided by Zeus. Focus on:
    - Verify accessibility with tools
 
 4. **Polish & Refine:**
-   - Run linters and formatters (ESLint, Prettier, Stylelint, etc.)
+   - Run quality gates in resolved order: **Format → Lint → Typecheck → Tests**
+   - Use the exact commands from the resolved tooling map passed by Zeus
    - Optimize performance (lazy loading, code splitting, etc.)
    - Ensure consistent styling with design system
    - Add JSDoc/TSDoc comments for complex logic
@@ -114,5 +115,8 @@ When you've finished the frontend implementation:
 - Use semantic HTML elements
 - Optimize images (WebP, lazy loading, srcset)
 - Follow project's import conventions (absolute vs relative)
+- Default to TypeScript (`.tsx`) unless the project is already plain JS
+- Use the resolved command map from Zeus — never guess or substitute commands
+- `camelCase` for filenames (e.g. `userCard.tsx`); `PascalCase` for component names
 
 The CONDUCTOR (Zeus) manages phase tracking and completion documentation. You focus on delivering high-quality, accessible, responsive UI implementations.

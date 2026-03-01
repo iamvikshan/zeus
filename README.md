@@ -107,6 +107,18 @@ This repository contains custom agent prompts that work together to handle the c
 - Open questions with options/recommendations
 - Risk assessment and mitigation strategies
 
+### 🔧 Universal Tooling with Opinionated Fallbacks
+
+Agents auto-detect the project's tooling stack and never impose preferences on existing projects:
+
+1. **Detection first** — `AGENTS.md` overrides → `package.json` scripts → config-file presence → lockfile/PM detection
+2. **Fallback defaults** — When no project signal exists, agents default to: **Bun**, **TypeScript**, **ESLint**, **Prettier**, **`bun test`**
+3. **Per-project override** — Any project can include a `tooling:` section in its `AGENTS.md` to set explicit commands
+
+**Quality gate order** is enforced everywhere: **Format → Lint → Typecheck → Tests**
+
+This means agents work correctly on any project (npm/yarn/bun, JavaScript, Vitest, etc.) while providing sensible defaults for greenfield work.
+
 ## Installation
 
 1. **Clone or download this repository:**
@@ -208,6 +220,22 @@ Agents check for plan directory configuration:
 1. Look for `AGENTS.md` file in workspace
 2. Find plan directory specification (e.g., `.plans/`, `plans/`)
 3. Default to `plans/` if not specified
+
+### Tooling Overrides via AGENTS.md
+
+Projects can override the default tooling resolution by adding a `tooling:` block to their `AGENTS.md`:
+
+```yaml
+tooling:
+  pm: bun
+  format: bun prettier --write .
+  lint: bun eslint .
+  typecheck: bun tsc --noEmit
+  test: bun vitest
+  build: bun build
+```
+
+When present, these commands take highest priority. When absent, agents auto-detect from `package.json` scripts, config files, and lockfiles. If nothing is detected (greenfield project), agents fall back to Bun + TypeScript + ESLint + Prettier.
 
 ### Tool Requirements
 All agents declare their required tools in YAML frontmatter:

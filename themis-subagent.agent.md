@@ -36,7 +36,18 @@ CRITICAL: You receive context from the parent agent including:
    - No obvious bugs or edge cases were missed
    - Error handling is appropriate
 
-3. **Provide Feedback**: Return a structured review containing:
+3. **Preference Compliance**: Verify the implementation respects the resolved tooling and coding conventions:
+   - **Command Map**: The resolved commands (format/lint/typecheck/test) were used — not substitutes or guesses
+   - **Quality Gate Order**: Format → Lint → Typecheck → Tests was followed
+   - **TypeScript**: `.ts`/`.tsx` used unless existing project is plain JS
+   - **Module Boundaries**: Reusable logic extracted when imported by 2+ files; no god files
+   - **Naming**: `camelCase` filenames, proper casing for variables/classes/constants
+   - **Folder Layout**: Shared types in `types/`, tests in `/tests` or the project's established location
+   - **Config Policy**: Non-secrets in `config.ts`, secrets-only in `.env`
+   - **Barrel Exports**: No blanket re-export barrels inside feature folders; direct imports preferred
+   - **Code Hygiene**: No dead/commented-out code, functions ≤40 lines, early returns over nesting
+
+4. **Provide Feedback**: Return a structured review containing:
    - **Status**: `APPROVED` | `NEEDS_REVISION` | `FAILED`
    - **Summary**: 1-2 sentence overview of the review
    - **Strengths**: What was done well (2-4 bullet points)
@@ -58,6 +69,15 @@ CRITICAL: You receive context from the parent agent including:
 
 **Issues Found:** {if none, say "None"}
 - **[{CRITICAL|MAJOR|MINOR}]** {Issue description with file/line reference}
+
+**Preference Compliance:**
+- **Command Map**: ✅ Resolved commands used | ❌ Substituted/guessed commands
+- **Quality Gate Order**: ✅ Format→Lint→Typecheck→Tests | ❌ Order skipped/wrong
+- **TypeScript**: ✅ TS used | ⬜ N/A (existing JS project) | ❌ Plain JS in TS project
+- **Module Boundaries**: ✅ Properly extracted | ❌ God files / duplicated logic
+- **Naming**: ✅ Conventions followed | ❌ Violations found
+- **Config Policy**: ✅ Secrets in .env only | ❌ Secrets hardcoded / non-secrets in .env
+- **Barrel Exports**: ✅ Safe usage | ⬜ None used | ❌ Blanket re-exports
 
 **CustomNPC+ Script Checks:** {if applicable, verify these}
 - **API Verification**: ✅ All methods verified in source interfaces | ❌ Unverified methods found
