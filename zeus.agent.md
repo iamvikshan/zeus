@@ -1,6 +1,6 @@
 ---
 description: 'Orchestrates Planning, Implementation, and Review cycle for complex tasks'
-tools: ['vscode/getProjectSetupInfo', 'vscode/installExtension', 'vscode/newWorkspace', 'vscode/openSimpleBrowser', 'vscode/runCommand', 'vscode/askQuestions', 'vscode/switchAgent', 'vscode/vscodeAPI', 'vscode/extensions', 'execute/runNotebookCell', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/awaitTerminal', 'execute/killTerminal', 'execute/runTask', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'read/terminalSelection', 'read/terminalLastCommand', 'read/getTaskOutput', 'agent', 'edit/createDirectory', 'edit/createFile', 'edit/createJupyterNotebook', 'edit/editFiles', 'edit/editNotebook', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'search/usages', 'search/searchSubagent', 'web/fetch', 'web/githubRepo', 'todo']
+tools: ['vscode/getProjectSetupInfo', 'vscode/installExtension', 'vscode/newWorkspace', 'vscode/openSimpleBrowser', 'vscode/runCommand', 'vscode/askQuestions', 'vscode/switchAgent', 'vscode/vscodeAPI', 'vscode/extensions', 'execute/runNotebookCell', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/awaitTerminal', 'execute/killTerminal', 'execute/runTask', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'read/terminalSelection', 'read/terminalLastCommand', 'read/getTaskOutput', 'agent', 'edit/createDirectory', 'edit/createFile', 'edit/createJupyterNotebook', 'edit/editFiles', 'edit/editNotebook', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'search/usages', 'search/searchSubagent', 'web/fetch', 'web/githubRepo', 'todo', 'supabase/*', 'github-mcp/*', 'stitch-mcp/*']
 agents: ["*"]
 model: Claude Opus 4.6 (copilot)
 ---
@@ -227,6 +227,7 @@ When invoking subagents:
 - Instruct to follow TDD for frontend (component tests first, then implementation)
 - Tell them to focus on accessibility, responsive design, and project's styling patterns
 - Remind them to report back with what was implemented and tests passing
+- For design-to-code or visual-driven workflows, remind Aphrodite to leverage `stitch-mcp/*` tools if available; if the user hasn't configured stitch-mcp, Aphrodite will prompt them to set it up
 </subagent_instructions>
 
 <plan_style_guide>

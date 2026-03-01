@@ -1,4 +1,4 @@
-# Copilot Atlas
+# Zeus
 
 A multi-agent orchestration system for VS Code Copilot that enables complex software development workflows through intelligent agent delegation and parallel execution.
 
@@ -71,7 +71,7 @@ This repository contains custom agent prompts that work together to handle the c
 
 **Why This Matters:** Traditional single-agent approaches force one model to handle everything—research, implementation, review, documentation—all within a limited context window. This quickly exhausts precious tokens on context that could be used for your actual code.
 
-**How Copilot Atlas Solves It:** By delegating tasks to specialized subagents, we radically improve context efficiency:
+**How Zeus Solves It:** By delegating tasks to specialized subagents, we radically improve context efficiency:
 
 - **Researcher agents** (Athena, Hermes) read and analyze large codebases, returning only high-signal summaries—not the raw 50,000 lines of code
 - **Implementer agents** (Hephaestus) focus solely on the files they're modifying, not rereading the entire project architecture
@@ -123,7 +123,7 @@ This means agents work correctly on any project (npm/yarn/bun, JavaScript, Vites
 
 1. **Clone or download this repository:**
    ```bash
-   git clone https://github.com/bigguy345/Github-Copilot-Atlas.git
+   git clone https://github.com/iamvikshan/zeus.git
    ```
 
 2. **Copy agent files to VS Code User prompts directory:**
@@ -395,7 +395,7 @@ Add an entry to the README's Specialized Subagents section describing when to us
 
 MIT License
 
-Copyright (c) 2026 Copilot Atlas Contributors
+Copyright (c) 2026 Zeus Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -418,6 +418,7 @@ SOFTWARE.
 ## Acknowledgments
 
 This project builds upon the excellent work of:
+- **[copilot-atlas](https://github.com/bigguy345/Github-Copilot-Atlas)** by [bigguy345](https://github.com/bigguy345) - Inspiration for agent orchestration patterns and tooling integration
 - **[copilot-orchestra](https://github.com/ShepAlderson/copilot-orchestra)** by [ShepAlderson](https://github.com/ShepAlderson) - Foundation and concept for multi-agent orchestration
 - **[oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode)** by [code-yeongyu](https://github.com/code-yeongyu) - Inspiration for agent naming conventions and templates
 
