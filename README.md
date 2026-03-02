@@ -15,7 +15,7 @@ This repository contains custom agent prompts that work together to handle the c
 ### Primary Agents
 
 - **Zeus** (`zeus.agent.md`) - The ORCHESTRATOR
-  - **Model:** Claude Sonnet 4.5 (copilot)
+  - **Model:** Claude Opus 4.6 (copilot)
   - Orchestrates the full development lifecycle
   - Delegates to specialized subagents for research, implementation, and review
   - Manages context conservation and parallel execution
@@ -38,7 +38,7 @@ This repository contains custom agent prompts that work together to handle the c
   - Supports parallel research across independent subsystems
 
 - **Hephaestus** (`hephaestus-subagent.agent.md`) - THE IMPLEMENTER
-  - **Model:** Claude Sonnet 4.5 (copilot)
+  - **Model:** Claude Opus 4.6 (copilot)
   - Executes implementation following strict TDD principles
   - Writes tests first, then minimal code to pass
   - Handles linting and formatting

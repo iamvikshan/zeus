@@ -153,9 +153,20 @@ For each phase in the plan, execute this cycle:
    - Instruction to verify tests pass and code follows best practices
 
 2. Analyze review feedback:
-   - **If APPROVED**: Proceed to commit step
+   - **If APPROVED**: Proceed to plan update step
    - **If NEEDS_REVISION**: Return to 2A with specific revision requirements
    - **If FAILED**: Stop and consult user for guidance
+
+### 2B½. Update Master Plan
+
+After a phase is reviewed and approved, update the master plan file (`<plan-directory>/<task-name>-plan.md`) to reflect reality:
+
+1. **Mark the completed phase**: Change the phase header from `⬜` to `✅` in the plan file.
+2. **Record deviations**: If the implementation subagent reported any deviations from the planned approach (different files touched, alternative algorithms chosen, scope adjustments), update the completed phase's description to reflect what was *actually* done.
+3. **Update future phases if needed**: If discoveries during implementation affect subsequent phases (new dependencies found, API changes, scope shifts), update those phase descriptions, files/functions lists, and steps accordingly.
+4. **Add a `**Changes from plan:**` note** under any phase whose implementation diverged, briefly explaining why.
+
+This keeps the master plan as a **living document** that accurately reflects the project's current state at all times.
 
 ### 2C. Return to User for Commit
 1. **Pause and Present Summary**:
@@ -208,6 +219,7 @@ When invoking subagents:
 - Instruct to follow strict TDD: tests first (failing), minimal code, tests pass, lint/format
 - Tell them to work autonomously and only ask user for input on critical implementation decisions
 - Remind them NOT to proceed to next phase or write completion files (Conductor handles this)
+- **Require deviation reporting**: Instruct them to explicitly list any deviations from the plan (different files modified, alternative approaches taken, unexpected discoveries, scope changes) in their completion summary
 
 **themis-subagent**:
 - Provide the phase objective, acceptance criteria, and modified files
@@ -227,6 +239,7 @@ When invoking subagents:
 - Instruct to follow TDD for frontend (component tests first, then implementation)
 - Tell them to focus on accessibility, responsive design, and project's styling patterns
 - Remind them to report back with what was implemented and tests passing
+- **Require deviation reporting**: Instruct them to explicitly list any deviations from the plan (different components created, styling approach changes, unexpected discoveries) in their completion summary
 - For design-to-code or visual-driven workflows, remind Aphrodite to leverage `stitch-mcp/*` tools if available; if the user hasn't configured stitch-mcp, Aphrodite will prompt them to set it up
 </subagent_instructions>
 
@@ -239,7 +252,7 @@ When invoking subagents:
 **Phase Count Rationale (2–4 bullets):** {Why N phases is the minimum safe breakdown}
 
 **Phases {N phases (N = minimum necessary, 1–10)}**
-1. **Phase {Phase Number}: {Phase Title}**
+1. **⬜ Phase {Phase Number}: {Phase Title}**
     - **Objective:** {What is to be achieved in this phase}
     - **Files/Functions to Modify/Create:** {List of files and functions relevant to this phase}
     - **Tests to Write:** {Lists of test names to be written for test driven development}
@@ -248,6 +261,11 @@ When invoking subagents:
         2. {Step 2}
         3. {Step 3}
         ...
+
+{After a phase completes, update its marker from ⬜ to ✅ and append any deviations:}
+1. **✅ Phase 1: {Phase Title}**
+    - **Changes from plan:** {Brief note if implementation diverged, otherwise omit this line}
+    ...
 
 **Open Questions {1-5 questions, ~5-25 words each}**
 1. {Clarifying question? Option A / Option B / Option C}
