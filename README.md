@@ -2,9 +2,7 @@
 
 A multi-agent orchestration system for VS Code Copilot that enables complex software development workflows through intelligent agent delegation and parallel execution.
 
-> Built upon the foundation of [copilot-orchestra](https://github.com/ShepAlderson/copilot-orchestra) by ShepAlderson, with agent naming conventions inspired by [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode).
-
-> **Note:** Best supported on VS Code Insiders (as of January 2026) for access to the latest agent orchestration features.
+> Built upon the foundation of [copilot-orchestra](https://github.com/ShepAlderson/copilot-orchestra) by ShepAlderson.
 
 ## Overview
 
@@ -67,7 +65,7 @@ This repository contains custom agent prompts that work together to handle the c
 
 ## Key Features
 
-### � Context Conservation: The Game Changer
+### Context Conservation: The Game Changer
 
 **Why This Matters:** Traditional single-agent approaches force one model to handle everything—research, implementation, review, documentation—all within a limited context window. This quickly exhausts precious tokens on context that could be used for your actual code.
 
@@ -82,32 +80,32 @@ This repository contains custom agent prompts that work together to handle the c
 
 ---
 
-### 🔄 Parallel Agent Execution
+### Parallel Agent Execution
 - Launch multiple subagents simultaneously for independent tasks
 - Hermes: 3-10 parallel searches in first batch
 - Athena: Parallel research across multiple subsystems
 - Hephaestus: Parallel implementation for disjoint features
 - Maximum 10 parallel agents per phase
 
-### 🧪 Test-Driven Development
+### Test-Driven Development
 - Every phase follows red-green-refactor cycle
 - Tests written first, run to fail, then minimal code
 - Explicit test → code → test steps in all plans
 - No manual testing unless explicitly requested
 
-### 🤝 Proper Agent Handoffs
+### Proper Agent Handoffs
 - VS Code Custom Agent handoff configuration
 - Prometheus → Zeus automatic handoff option
 - Each agent can declare available delegations
 - Clear handoff workflow with user approval gates
 
-### 📋 Structured Planning
+### Structured Planning
 - Zeus-compatible plan format
 - 3-10 incremental, self-contained phases
 - Open questions with options/recommendations
 - Risk assessment and mitigation strategies
 
-### 🔧 Universal Tooling with Opinionated Fallbacks
+### Universal Tooling with Opinionated Fallbacks
 
 Agents auto-detect the project's tooling stack and never impose preferences on existing projects:
 
@@ -118,6 +116,27 @@ Agents auto-detect the project's tooling stack and never impose preferences on e
 **Quality gate order** is enforced everywhere: **Format → Lint → Typecheck → Tests**
 
 This means agents work correctly on any project (npm/yarn/bun, JavaScript, Vitest, etc.) while providing sensible defaults for greenfield work.
+
+### Browser Tools Integration
+
+For web projects, agents can use VS Code's integrated browser to test and verify UI:
+- **Aphrodite** opens pages, interacts with elements, takes screenshots to verify implementations
+- **Hephaestus** runs post-TDD browser checks for web features
+- **Themis** performs visual verification during code review
+
+Enable with: `"workbench.browser.enableChatTools": true` in VS Code settings.
+
+Available tools: page navigation, screenshots, element interaction, Playwright automation.
+
+### Memory & Context Management
+
+Agents use session memory (`/memories/session/`) to preserve critical state across long-running plans:
+
+- **Zeus** persists phase decisions, resolved tooling, and findings that inform future phases
+- **Athena** stores key research findings in session memory when they affect multiple phases
+- **Prometheus** persists findings during long research sessions
+- **Context compaction** -- Zeus uses `/compact` proactively when context grows large, with focus instructions to preserve plan-relevant state
+- After compaction, agents re-read session memory to restore critical context
 
 ## Installation
 
