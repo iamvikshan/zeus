@@ -114,7 +114,7 @@ Use session memory (`/memories/session/`) to preserve critical state across long
 - Before delegating to subagents: save current orchestration state if context is getting large
 
 **Context compaction awareness:**
-- Use `/compact` proactively when context exceeds ~70% capacity (long plans, many phases)
+- Use `/compact` proactively when context exceeds ~75% capacity (long plans, many phases)
 - When compacting, include focus instructions: `/compact focus on Phase N objectives and remaining plan`
 - After compaction, re-read session memory to restore critical state
 - Instruct subagents to keep responses concise to slow context growth
@@ -127,7 +127,7 @@ Use session memory (`/memories/session/`) to preserve critical state across long
 <proactive_advisory>
 ## Proactive Planning Advisory
 
-During Phase 0 (Planning), proactively identify and recommend project enhancements:
+During Phase 1 (Planning), proactively identify and recommend project enhancements:
 
 **Package & Library Discovery:**
 - When Athena/Hermes research reveals opportunities (missing test utils, outdated deps, useful libraries), include them in the plan
@@ -305,6 +305,7 @@ When invoking subagents:
 - Instruct to follow strict TDD: tests first (failing), minimal code, tests pass, lint/format
 - Tell them to work autonomously and only ask user for input on critical implementation decisions
 - Remind them NOT to proceed to next phase or write completion files (Conductor handles this)
+- **Reinforce compliance**: Always include this in the delegation prompt: "You MUST NOT install any packages unless explicitly listed below. You MUST NOT use any other package managers (PM) other than the resolved one. Complete ALL assigned work autonomously."
 - **Require deviation reporting**: Instruct them to explicitly list any deviations from the plan (different files modified, alternative approaches taken, unexpected discoveries, scope changes) in their completion summary
 
 **themis-subagent**:
@@ -326,6 +327,7 @@ When invoking subagents:
 - Tell them to focus on accessibility, responsive design, and project's styling patterns
 - Remind them to report back with what was implemented and tests passing
 - **Require deviation reporting**: Instruct them to explicitly list any deviations from the plan (different components created, styling approach changes, unexpected discoveries) in their completion summary
+- **Reinforce compliance**: Always include this in the delegation prompt: "You MUST NOT install any packages. You MUST NOT use any other package managers (PM) other than the resolved one. You MUST complete ALL listed files autonomously — do NOT ask to proceed. Report honest progress."
 - For design-to-code or visual-driven workflows, remind Aphrodite to leverage `stitch-mcp/*` tools if available; if the user hasn't configured stitch-mcp, Aphrodite will prompt them to set it up
 </subagent_instructions>
 
