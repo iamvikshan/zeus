@@ -20,7 +20,7 @@ This repository contains custom agent prompts that work together to handle the c
   - Handles phase tracking and user approval gates
 
 - **Prometheus** (`prometheus.agent.md`) - The AUTONOMOUS PLANNER
-  - **Model:** GPT-5.2 High (if reasoning set to high, check requirements block below)
+  - **Model:** GPT-5.4 (copilot)
   - Researches requirements and analyzes codebases
   - Writes comprehensive TDD-driven implementation plans
   - Automatically hands off to Zeus for execution
@@ -29,7 +29,7 @@ This repository contains custom agent prompts that work together to handle the c
 ### Specialized Subagents
 
 - **Athena** (`athena-subagent.agent.md`) - THE RESEARCHER
-  - **Model:** GPT-5.2 (copilot)
+  - **Model:** Claude Sonnet 4.6 (copilot)
   - Gathers comprehensive context about tasks
   - Can delegate to Hermes for large-scope research
   - Returns structured findings to parent agents
@@ -50,14 +50,14 @@ This repository contains custom agent prompts that work together to handle the c
   - MANDATORY parallel search strategy (3-10 simultaneous searches)
 
 - **Themis** (`themis-subagent.agent.md`) - THE REVIEWER
-  - **Model:** GPT-5.2 (copilot)
+  - **Model:** GPT-5.4 (copilot)
   - Reviews code for correctness, quality, and test coverage
   - Returns structured feedback (APPROVED/NEEDS_REVISION/FAILED)
   - Can be invoked in parallel for independent phases
   - Focus on blocking issues vs nice-to-haves
 
 - **Aphrodite** (`aphrodite-subagent.agent.md`) - THE UI/UX SPECIALIST
-  - **Model:** Gemini 3 Pro (Preview) (copilot)
+  - **Model:** GPT-5.4 (copilot)
   - Implements user interfaces, styling, and responsive layouts
   - Expert in modern frontend frameworks and tooling
   - Follows TDD principles for frontend (component tests first)
@@ -238,7 +238,7 @@ Zeus: Phase 1 complete! [commit message provided]
 Agents check for plan directory configuration:
 1. Look for `AGENTS.md` file in workspace
 2. Find plan directory specification (e.g., `.plans/`, `plans/`)
-3. Default to `plans/` if not specified
+3. default to `.zeus/plans/` if not specified
 
 ### Tooling Overrides via AGENTS.md
 
@@ -302,7 +302,7 @@ Create a new file in your prompts directory: `YourAgent-subagent.agent.md`
 description: 'Brief description of what this agent does'
 argument-hint: What kind of task to delegate (e.g., "Analyze database schema")
 tools: ['search', 'usages', 'edit', 'runCommands', ...]  # Tools your agent needs
-model: Claude Sonnet 4.5 (copilot)  # Or GPT-5.2, Gemini, etc.
+model: Claude Sonnet 4.5 (copilot)  # Or GPT-5.4, Gemini, etc.
 ---
 
 You are a [ROLE] SUBAGENT called by a parent CONDUCTOR agent.
