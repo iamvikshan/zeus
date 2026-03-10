@@ -1,0 +1,7 @@
+# Dependencies
+node_modules/
+
+# VCS and editor state
+.git/
+
+.*ignore
