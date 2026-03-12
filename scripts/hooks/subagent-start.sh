@@ -1,7 +1,7 @@
 #!/bin/bash
 # SubagentStart hook: Injects Core Philosophy principles into every
 # subagent session. Adds role-specific rules for known worker types
-# (Ekko, Aurora, Sentry) to enforce consistent quality standards.
+# (ekko, aurora, sentry) to enforce consistent quality standards.
 
 set -euo pipefail
 

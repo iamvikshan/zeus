@@ -1,6 +1,6 @@
 #!/bin/bash
 # SessionStart hook: Compiles project context from repo memories, git state,
-# and project metadata. Injects this as additionalContext so Atlas begins
+# and project metadata. Injects this as additionalContext so **atlas** begins
 # every session with awareness of codebase conventions and environment.
 
 set -euo pipefail

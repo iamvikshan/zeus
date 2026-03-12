@@ -1,4 +1,4 @@
-# Atlas
+# **atlas**
 
 A multi-agent orchestration system for VS Code Copilot that drives the complete software development lifecycle -- **Planning -> Implementation -> Review -> Commit** -- through intelligent agent delegation and parallel execution.
 
@@ -15,7 +15,7 @@ These principles govern every agent in the system. They are not guidelines -- th
 
 - **Indistinguishable Code.** Output must be indistinguishable from a senior engineer's work. Follow existing project conventions exactly. Use proper error handling without being asked. No over-engineering, no unnecessary abstractions, no AI-generated commentary that restates what code obviously does.
 
-- **Zero-trust.** No agent trusts its own work. Every change is reviewed by Sentry. Every plan is validated by Metis. Completion claims are verified against the plan. Zero findings after review means look harder.
+- **Zero-trust.** No agent trusts its own work. Every change is reviewed by **sentry**. Every plan is validated by **metis**. Completion claims are verified against the plan. Zero findings after review means look harder.
 
 - **Minimize cognitive load.** Users provide intent; agents provide everything else -- research, alternatives, implementation, tests, review, and commit messages. When user input is needed, present structured choices via `vscode/askQuestions`, not open-ended questions.
 
@@ -25,55 +25,55 @@ These principles govern every agent in the system. They are not guidelines -- th
 
 ## Architecture
 
-The system uses a flat conductor-delegate pattern. Two user-facing agents handle interaction and planning. Atlas directly manages execution by delegating to specialized workers. Specialized subagents perform the actual work.
+The system uses a flat conductor-delegate pattern. Two user-facing agents handle interaction and planning. **atlas** directly manages execution by delegating to specialized workers. Specialized subagents perform the actual work.
 
 ```
 User
   |
   v
-Atlas (conductor) <--handoff--> Prometheus (planner)
+atlas (conductor) <--handoff--> prometheus (planner)
   |
-  +---> Ekko (backend)     -- writes server/logic code
-  +---> Aurora (frontend)   -- writes UI code
-  +---> Sentry (reviewer)   -- reviews all changes (adversarial)
-  +---> Oracle (researcher) -- gathers context
-  +---> Killua (scout)      -- fast file discovery
-  +---> Metis (validator)   -- validates plans (dual-mode)
+  +---> ekko (backend)     -- writes server/logic code
+  +---> aurora (frontend)   -- writes UI code
+  +---> sentry (reviewer)   -- reviews all changes (adversarial)
+  +---> oracle (researcher) -- gathers context
+  +---> killua (scout)      -- fast file discovery
+  +---> metis (validator)   -- validates plans (dual-mode)
 ```
 
 ### User-Facing Agents
 
-| Agent          | File                  | Model                     | Role                                                                                                                                                                                                                                   |
-| -------------- | --------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Atlas**      | `atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. Presents results. May apply trivial single-file quick fixes (reviewed by Sentry). Never writes multi-file code. |
-| **Prometheus** | `prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults Metis PRE_PLAN, drafts phased plans, validates iteratively with Metis VALIDATE, hands off to Atlas. Never writes implementation code.                                                       |
+| Agent          | File                  | Model                     | Role                                                                                                                                                                                                                                       |
+| -------------- | --------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **atlas**      | `atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. Presents results. May apply trivial single-file quick fixes (reviewed by **sentry**). Never writes multi-file code. |
+| **prometheus** | `prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults **metis** PRE_PLAN, drafts phased plans, validates iteratively with **metis** VALIDATE, hands off to **atlas**. Never writes implementation code.                                               |
 
-Atlas and Prometheus hand off to each other via VS Code's agent handoff system. Atlas hands complex tasks to Prometheus for planning; Prometheus hands approved plans back to Atlas for execution.
+**atlas** and prometheus hand off to each other via VS Code's agent handoff system. **atlas** hands complex tasks to prometheus for planning; prometheus hands approved plans back to **atlas** for execution.
 
 ### Subagents
 
-| Agent      | File              | Model                              | Role                                                                                                                       |
-| ---------- | ----------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| **Ekko**   | `ekko.agent.md`   | Claude Opus 4.6 (copilot)          | Backend/core implementer. Strict TDD, Write-Guard, Comment Discipline, Indistinguishable Code.                             |
-| **Aurora** | `aurora.agent.md` | GPT-5.4 (copilot)                  | Frontend/UI implementer. TDD, accessibility-first, visual verification, stitch-mcp scaffolding.                            |
-| **Sentry** | `sentry.agent.md` | GPT-5.4 (copilot)                  | Code reviewer. Adversarial analysis, security, correctness, requirement validation. Optional CodeRabbit. Never edits code. |
-| **Oracle** | `oracle.agent.md` | Gemini 3 Flash (Preview) (copilot) | Researcher. Structured findings, convention discovery, external docs, skills recommendations.                              |
-| **Killua** | `killua.agent.md` | Gemini 3 Flash (Preview) (copilot) | Scout. Ultra-fast file discovery, dependency mapping, read-only exploration.                                               |
-| **Metis**  | `metis.agent.md`  | Claude Sonnet 4.6 (copilot)        | Plan validator (dual-mode). PRE_PLAN for pre-planning analysis, VALIDATE for plan validation. Default: VALIDATE.           |
+| Agent      | File              | Model                       | Role                                                                                                                       |
+| ---------- | ----------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **ekko**   | `ekko.agent.md`   | Claude Opus 4.6 (copilot)   | Backend/core implementer. Strict TDD, Write-Guard, Comment Discipline, Indistinguishable Code.                             |
+| **aurora** | `aurora.agent.md` | GPT-5.4 (copilot)           | Frontend/UI implementer. TDD, accessibility-first, visual verification, stitch-mcp scaffolding.                            |
+| **sentry** | `sentry.agent.md` | GPT-5.4 (copilot)           | Code reviewer. Adversarial analysis, security, correctness, requirement validation. Optional CodeRabbit. Never edits code. |
+| **oracle** | `oracle.agent.md` | Claude Sonnet 4.6 (copilot) | Researcher. Structured findings, convention discovery, external docs, skills recommendations.                              |
+| **killua** | `killua.agent.md` | Claude Haiku 4.5 (copilot)  | Scout. Ultra-fast file discovery, dependency mapping, read-only exploration.                                               |
+| **metis**  | `metis.agent.md`  | Claude Sonnet 4.6 (copilot) | Plan validator (dual-mode). PRE_PLAN for pre-planning analysis, VALIDATE for plan validation. Default: VALIDATE.           |
 
 ### Delegation Rules
 
-- **Atlas** delegates to: Ekko, Aurora, Sentry, Oracle, Killua, Metis
-- **Prometheus** delegates to: Oracle, Killua, Metis (PRE_PLAN + VALIDATE)
-- Planned multi-file implementation is handled exclusively by Ekko and Aurora. Atlas may apply trivial single-file quick fixes directly (always reviewed by Sentry).
-- Sentry reviews ALL changes in ALL modes -- never skipped.
-- Category routing is STRICT. Atlas enforces routing rules directly based on the task category.
+- **atlas** delegates to: **ekko**, **aurora**, **sentry**, **oracle**, **killua**, **metis**
+- **prometheus** delegates to: **oracle**, **killua**, **metis** (PRE_PLAN + VALIDATE)
+- Planned multi-file implementation is handled exclusively by **ekko** and **aurora**. **atlas** may apply trivial single-file quick fixes directly (always reviewed by **sentry**).
+- **sentry** reviews ALL changes in ALL modes -- never skipped.
+- Category routing is STRICT. **atlas** enforces routing rules directly based on the task category.
 
 ---
 
 ## IntentGate
 
-Before routing any task, Atlas runs the IntentGate:
+Before routing any task, **atlas** runs the IntentGate:
 
 1. **Weigh intent.** What is the user actually asking for? Is the request clear, or does it contain hidden assumptions?
 2. **Research alternatives.** Do established packages, libraries, or VS Code extensions already solve this problem?
@@ -85,13 +85,13 @@ IntentGate prevents the system from blindly implementing whatever is asked. It a
 
 ---
 
-## Dual-Mode Metis
+## Dual-Mode **metis**
 
-Metis operates in two modes, determined by the `MODE:` field in the delegation prompt:
+**metis** operates in two modes, determined by the `MODE:` field in the delegation prompt:
 
 ### PRE_PLAN Mode
 
-Used by Prometheus before drafting a plan. Analyzes the user's request and interview results to surface:
+Used by prometheus before drafting a plan. Analyzes the user's request and interview results to surface:
 
 - **Hidden Intentions** -- what the user didn't think of
 - **Ambiguities** -- what could cause implementation failure
@@ -102,7 +102,7 @@ Used by Prometheus before drafting a plan. Analyzes the user's request and inter
 
 ### VALIDATE Mode (Default)
 
-Used by both Prometheus and Atlas to validate plans. Runs a checklist covering:
+Used by both prometheus and **atlas** to validate plans. Runs a checklist covering:
 
 - Feasibility and scope assessment
 - File and function references (do they exist?)
@@ -117,23 +117,23 @@ If validation fails, the plan enters a revision loop (max 3 cycles). If it fails
 
 ## Strict Category Routing
 
-Atlas enforces strict routing based on the task category:
+**atlas** enforces strict routing based on the task category:
 
-| Category                     | Worker Routing                                                                                                              |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `visual/UI/frontend/styling` | **Aurora ONLY.** Ekko excluded unless backend API work is also needed.                                                      |
-| `backend/API/database/logic` | **Ekko ONLY.** Aurora excluded unless frontend integration is also needed.                                                  |
-| `full-stack/mixed`           | **Sequential: Ekko first, then Aurora.** If Ekko passes review but Aurora fails, re-run only Aurora. Non-overlapping files. |
-| `architecture/design`        | **Oracle** for analysis, then route to appropriate worker.                                                                  |
-| `documentation/writing`      | Ekko for backend docs, Aurora for frontend docs.                                                                            |
+| Category                     | Worker Routing                                                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `visual/UI/frontend/styling` | **aurora** ONLY.\*\* **ekko** excluded unless backend API work is also needed.                                                                  |
+| `backend/API/database/logic` | **ekko** ONLY.\*\* **aurora** excluded unless frontend integration is also needed.                                                              |
+| `full-stack/mixed`           | **Sequential: **ekko** first, then **aurora**.** If **ekko** passes review but **aurora** fails, re-run only **aurora**. Non-overlapping files. |
+| `architecture/design`        | **oracle** for analysis, then route to appropriate worker.                                                                                      |
+| `documentation/writing`      | **ekko** for backend docs, **aurora** for frontend docs.                                                                                        |
 
-If no category is provided, Atlas infers from file types (`.tsx`/`.css` -> Aurora, `.ts`/`.py` server files -> Ekko, mixed -> both sequential).
+If no category is provided, **atlas** infers from file types (`.tsx`/`.css` -> **aurora**, `.ts`/`.py` server files -> **ekko**, mixed -> both sequential).
 
 ---
 
 ## Worker Zero-Trust Hardening
 
-All implementation workers (Ekko, Aurora) follow these rules:
+All implementation workers (**ekko**, **aurora**) follow these rules:
 
 - **Write-Guard.** Never edit a file without reading it first. In the prompts workspace, workspace hooks enforce this (PreToolUse). In other workspaces, workers must follow proactively.
 - **Comment Discipline.** Comments must add value. No restating what code obviously does. In the prompts workspace, workspace hooks flag files exceeding 30% comment density (PostToolUse). Workers must avoid AI slop proactively.
@@ -144,51 +144,51 @@ All implementation workers (Ekko, Aurora) follow these rules:
 
 ## Completion Enforcement
 
-### Completion Verification (Atlas Phase Verification)
+### Completion Verification (**atlas** Phase Verification)
 
-Before marking a phase as complete, Atlas verifies:
+Before marking a phase as complete, **atlas** verifies:
 
 - Every file listed in the plan was actually modified
 - Every test specified in the plan was actually written
 - Quality gates were actually run
 - No `TODO`, `FIXME`, or `HACK` comments were left in modified files
 
-### Atlas Phase Implementation Loop
+### **atlas** Phase Implementation Loop
 
-In Autopilot mode, Atlas runs a phase implementation loop (max 5 iterations):
+In Autopilot mode, **atlas** runs a phase implementation loop (max 5 iterations):
 
 1. Delegates phase work to the appropriate worker(s)
-2. Sentry reviews the worker's output
-3. If Sentry finds issues, Atlas re-delegates to the worker with Sentry's findings
-4. Loop continues until Sentry approves or max 5 iterations are reached
-5. Only marks phase COMPLETE when Sentry approves
+2. **sentry** reviews the worker's output
+3. If **sentry** finds issues, **atlas** re-delegates to the worker with **sentry**'s findings
+4. Loop continues until **sentry** approves or max 5 iterations are reached
+5. Only marks phase COMPLETE when **sentry** approves
 
 This prevents the "declare victory early" failure mode common in autonomous agents.
 
 ### Completion Honesty
 
-Atlas will NEVER report COMPLETE if tests are failing or quality gates were skipped. It will report BLOCKED instead.
+**atlas** will NEVER report COMPLETE if tests are failing or quality gates were skipped. It will report BLOCKED instead.
 
 ---
 
-## Adversarial Review (Sentry)
+## Adversarial Review (**sentry**)
 
-Sentry reviews ALL changes in ALL modes -- normal and Autopilot. It is never skipped.
+**sentry** reviews ALL changes in ALL modes -- normal and Autopilot. It is never skipped.
 
-Beyond standard code review (correctness, security, quality), Sentry performs adversarial analysis:
+Beyond standard code review (correctness, security, quality), **sentry** performs adversarial analysis:
 
 - **Assumptions Challenged.** For every major decision, identify assumptions relied on. What breaks if they're wrong?
 - **Failure Modes.** Scenarios that could cause the code to fail in production. Edge cases not covered by tests.
 - **Zero findings = look harder.** Absence of findings is a red flag, not a sign of perfection. Every review must surface at least observations.
 - **False Claims.** Worker claims are verified against actual code. Discrepancies are flagged as MAJOR issues.
 
-Sentry can also recommend creating hooks (`/create-hook`) when it identifies recurring quality issues.
+**sentry** can also recommend creating hooks (`/create-hook`) when it identifies recurring quality issues.
 
 ---
 
 ## Hooks System
 
-Hooks provide automated quality enforcement at key lifecycle events. Atlas carries agent-scoped hooks in its YAML frontmatter that are portable across all workspaces.
+Hooks provide automated quality enforcement at key lifecycle events. **atlas** carries agent-scoped hooks in its YAML frontmatter that are portable across all workspaces.
 
 ### Setup
 
@@ -198,9 +198,9 @@ Enable agent-scoped hooks in VS Code settings:
 "chat.useCustomAgentHooks": true
 ```
 
-### Agent-Scoped Hooks (Atlas Frontmatter)
+### Agent-Scoped Hooks (**atlas** Frontmatter)
 
-These hooks fire whenever Atlas is the active agent, in any workspace:
+These hooks fire whenever **atlas** is the active agent, in any workspace:
 
 | Hook            | Lifecycle Event  | Script             | Purpose                                                        |
 | --------------- | ---------------- | ------------------ | -------------------------------------------------------------- |
@@ -212,15 +212,15 @@ These hooks fire whenever Atlas is the active agent, in any workspace:
 | subagent-start  | SubagentStart    | subagent-start.sh  | Injects Core Philosophy and role-specific rules into subagents |
 | session-stop    | Stop             | session-stop.sh    | Warns on uncommitted changes and temp artifacts                |
 
-**Scope:** Agent-scoped PreToolUse/PostToolUse hooks fire for Atlas's own tool calls only. Subagent (Ekko/Aurora) edits are not covered -- workers enforce Write-Guard and Comment Discipline proactively.
+**Scope:** Agent-scoped PreToolUse/PostToolUse hooks fire for **atlas**'s own tool calls only. Subagent (**ekko**/**aurora**) edits are not covered -- workers enforce Write-Guard and Comment Discipline proactively.
 
 ### Workspace Hooks (`.github/hooks/quality.json`)
 
-Retained as fallback when working in the prompts workspace. Covers PreToolUse (write-guard) and PostToolUse (comment-checker) for all agents, including non-Atlas agents.
+Retained as fallback when working in the prompts workspace. Covers PreToolUse (write-guard) and PostToolUse (comment-checker) for all agents, including nonatlas agents.
 
 ### Creating New Hooks
 
-Use the `/create-hook` VS Code command to create project-specific hooks. Sentry recommends hooks when it identifies recurring quality issues across reviews.
+Use the `/create-hook` VS Code command to create project-specific hooks. **sentry** recommends hooks when it identifies recurring quality issues across reviews.
 
 Hook scripts live in `scripts/hooks/` and follow consistent patterns: `set -euo pipefail`, jq-based JSON parsing, graceful degradation if jq is missing.
 
@@ -233,7 +233,7 @@ Hook scripts live in `scripts/hooks/` and follow consistent patterns: `set -euo 
 Reusable workflow patterns that can be created and referenced by agents:
 
 - Use `/create-skill` to package a reusable workflow (e.g., TDD setup, migration checklist, deployment procedure)
-- Oracle recommends skills when it discovers reusable patterns during research
+- **oracle** recommends skills when it discovers reusable patterns during research
 - Workers note skill-worthy patterns in their deviation reports
 
 ### Agent Plugins
@@ -246,15 +246,15 @@ VS Code agent plugins extend agent capabilities. The system is plugin-aware and 
 
 ### Normal Mode (Default)
 
-After each phase passes Sentry review, Atlas presents the phase summary and commit message via `vscode/askQuestions` carousel. The user can accept (Atlas commits), pause (review first), or revise (submit feedback). All phases stay within a single chat interaction.
+After each phase passes **sentry** review, **atlas** presents the phase summary and commit message via `vscode/askQuestions` carousel. The user can accept (**atlas** commits), pause (review first), or revise (submit feedback). All phases stay within a single chat interaction.
 
 ### Autopilot Mode
 
 Triggered by explicit chat keywords only: `ULW`, `YOLO`. VS Code's `/yolo`, `/autoApprove`, and Autopilot permission level do NOT trigger this mode. Fully autonomous:
 
-- Auto-commits after Sentry approval
+- Auto-commits after **sentry** approval
 - No user stops between phases
-- Phase Implementation Loop enforces Sentry review on every phase (max 5 iterations)
+- Phase Implementation Loop enforces **sentry** review on every phase (max 5 iterations)
 - Uses `task_complete` tool to signal completion
 
 ---
@@ -267,8 +267,36 @@ All agents with research capabilities follow this priority order:
 2. **`search`** -- Local Context. Find internal patterns and conventions.
 3. **`exa/*` and `tavily/*`** -- Reliable Web Search. External troubleshooting/comparison.
 4. **`web`** -- Fallback Crawler. Use only if 1-3 fail.
-5. **Killua** -- File Discovery. "Where is X?"
-6. **Oracle** -- Deep Analysis. "How does X work?"
+5. **killua** -- File Discovery. "Where is X?"
+6. **oracle** -- Deep Analysis. "How does X work?"
+
+---
+
+## Reasoning Scaffolds
+
+**Prerequisite:** The `sequential-thinking` MCP server must be registered.
+
+```json
+		"sequential-thinking": {
+			"url": "https://remote.mcpservers.org/sequentialthinking/mcp",
+			"type": "http"
+		}
+```
+
+### Supported-Agent Matrix
+
+| Agent          | Included | Rationale                                                                    |
+| -------------- | -------- | ---------------------------------------------------------------------------- |
+| **atlas**      | Yes      | Planning and architectural routing benefit from structured steps             |
+| **prometheus** | Yes      | Multi-phase plan design requires multi-step reasoning                        |
+| **metis**      | Yes      | Multi-constraint validation and analysis                                     |
+| **oracle**     | Yes      | Deep research involves multi-constraint evaluation                           |
+| **sentry**     | Yes      | Adversarial review requires systematic reasoning                             |
+| **ekko**       | Yes      | Backend logic involves reasoning-intensive architecture                      |
+| **aurora**     | No       | GPT-5.4 model; UI work is convention-matching, not reasoning                 |
+| **killua**     | No       | Claude Haiku 4.5 speed-first design; reasoning overhead contradicts the role |
+
+**Hook scripts are intentionally unchanged for this rollout.** Sequential thinking is opt-in per agent file; no hook modifications required.
 
 ---
 
@@ -292,14 +320,14 @@ When `workbench.browser.enableChatTools` is enabled (VS Code v1.109+), agents us
 - `screenshotPage` -- Capture visual state
 - `openBrowserPage` / `navigatePage` -- Open/navigate to URLs
 
-Aurora retains `stitch-mcp/*` separately for UI scaffolding (component generation, design tokens). Scaffolding and browser verification are separate concerns.
+**aurora** retains `stitch-mcp/*` separately for UI scaffolding (component generation, design tokens). Scaffolding and browser verification are separate concerns.
 
 ### Optional Review Enhancements
 
-Sentry supports optional background tooling:
+**sentry** supports optional background tooling:
 
 - **CodeRabbit** (`coderabbit review --plain`) -- launched in background if available, findings supplement manual review
-- **Browser verification** -- for UI phases, Sentry loads the app and checks for console errors and visual regressions
+- **Browser verification** -- for UI phases, **sentry** loads the app and checks for console errors and visual regressions
 
 ---
 
@@ -307,10 +335,10 @@ Sentry supports optional background tooling:
 
 ### Session Memory (`/memories/session/`)
 
-- Atlas writes `<task>-atlas.md` for orchestration state recovery after context compaction
-- Subagents use private scratchpad files during execution. If the scratchpad has no transfer value, the subagent deletes it before returning. If it has relevant context, Atlas reads it, extracts what it needs, and deletes it immediately.
-- Exception: Metis and Sentry session files persist until their respective review loops complete, then Atlas deletes them.
-- Atlas's own `<task>-atlas.md` is deleted last, during the final archive/completion flow.
+- **atlas** writes `<task>atlas.md` for orchestration state recovery after context compaction
+- Subagents use private scratchpad files during execution. If the scratchpad has no transfer value, the subagent deletes it before returning. If it has relevant context, **atlas** reads it, extracts what it needs, and deletes it immediately.
+- Exception: **metis** and **sentry** session files persist until their respective review loops complete, then **atlas** deletes them.
+- **atlas**'s own `<task>atlas.md` is deleted last, during the final archive/completion flow.
 
 ### Repository Memory (`/memories/repo/`)
 
@@ -351,7 +379,7 @@ Agents auto-detect the project's tooling stack:
    curl -fsSL https://cli.coderabbit.ai/install.sh | sh
    ```
 
-5. Start a conversation with `@atlas` in VS Code Copilot Chat.
+5. Start a conversation with `@**atlas**` in VS Code Copilot Chat.
 
 ---
 
@@ -377,4 +405,3 @@ prompts/
     hooks/
       quality.json             -- Hook registration
 ```
-
