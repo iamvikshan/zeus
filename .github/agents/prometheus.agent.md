@@ -19,6 +19,7 @@ tools:
     'context7/*',
     'exa/*',
     'tavily/*',
+
     vscode.mermaid-chat-features/renderMermaidDiagram,
   ]
 agents: ['metis', 'oracle', 'killua']
@@ -94,7 +95,7 @@ During the planning and interview phase, check the user's intent:
 
 ### Step 1: Load Context
 
-1. Read `AGENTS.md` if it exists (for tooling, conventions, and `<plan-dir>/`). Default `<plan-dir>/` is `.**atlas**/plans/*`
+1. Read `AGENTS.md` if it exists (for tooling, conventions, and `<plan-dir>/`). Default `<plan-dir>/` is `.github/plans/*`
 2. Check plan directory for existing plans (avoid duplicates).
 3. Read `/memories/session/<task>-prometheus.md` if **atlas** passed you context during the handoff.
 4. Read relevant `/memories/repo/*.json` files for codebase conventions.
@@ -236,7 +237,7 @@ tool: `vscode/memory`
 - Format: `{"subject": "...", "fact": "...", "citations": [...], "reason": "...", "category": "...", "last_updated": "<time>", "by": "prometheus"}`
 - Naming: `<category>-<descriptive-name>.json`
 
-_Note: Do NOT write `/memories/session/<task>atlas.md`. **atlas** owns that file and will create it after receiving the handoff._
+_Note: Do NOT write `/memories/session/<task>-atlas.md`. **atlas** owns that file and will create it after receiving the handoff._
 
 ---
 

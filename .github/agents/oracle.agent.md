@@ -10,6 +10,7 @@ tools:
     search,
     web,
     'github/*',
+
     'sequential-thinking/*',
   ]
 model: Claude Sonnet 4.6 (copilot)

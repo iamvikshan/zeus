@@ -15,6 +15,7 @@ tools:
     'exa/*',
     'tavily/*',
     'stitch-mcp/*',
+
     edit,
     search,
     web,
@@ -95,6 +96,40 @@ Run in order (skip `n/a`):
 4. **Test** -- all tests pass
 
 _Max 3 fix cycles. If still failing, note it in your report and move on._
+
+### 5.5. Design Quality Gate
+
+Run the bundled atlas design skills against your UI output before visual verification. These skills auto-load when the task matches their description, and are also available as slash commands.
+
+**Workflow group (run every UI implementation, in order):**
+
+1. `/design-audit` -- Perform comprehensive audit of interface quality across accessibility, performance, theming, responsive design, and AI slop detection. Generates a detailed report with severity ratings and actionable fix recommendations.
+2. `/design-normalize` -- Normalize design to match the project's design system. Analyzes deviations, replaces one-off implementations with system equivalents, and ensures consistent tokens, components, and patterns throughout.
+3. `/design-harden` -- Improve interface resilience through better error handling, i18n support, text overflow handling, and edge case management. Makes interfaces robust and production-ready against real-world usage.
+4. `/design-polish` -- Final quality pass before shipping. Systematically fixes alignment, spacing, consistency, interaction states, and detail issues that separate good UI from great UI.
+
+**Advisory group (invoke when task matches):**
+
+- `/design-critique` -- Evaluate design effectiveness from a UX perspective with AI slop detection, visual hierarchy, and emotional resonance assessment.
+- `/design-clarify` -- Improve unclear UX copy, error messages, microcopy, labels, and instructions.
+- `/design-adapt` -- Adapt designs to work across different screen sizes, devices, contexts, or platforms.
+- `/design-optimize` -- Improve interface performance across loading speed, rendering, animations, images, and bundle size.
+- `/design-animate` -- Enhance features with purposeful animations, micro-interactions, and motion effects.
+- `/design-extract` -- Extract and consolidate reusable components, design tokens, and patterns into the design system.
+- `/design-onboard` -- Design or improve onboarding flows, empty states, and first-time user experiences.
+- `/design-colorize` -- Add strategic color to features that are too monochromatic or lack visual interest.
+- `/design-bolder` -- Amplify safe or boring designs to make them more visually interesting and stimulating.
+- `/design-quieter` -- Tone down overly bold or visually aggressive designs while maintaining quality.
+
+The `/frontend-design` skill is the foundational design reference -- it creates distinctive, production-grade frontend interfaces with high design quality, generating creative, polished code that avoids generic AI aesthetics. It auto-loads for UI tasks and is referenced by the other design skills.
+
+**Manual anti-pattern checks** (always apply, regardless of skill availability):
+
+- No default Inter font without intentional typographic choice
+- No purple/blue gradient hero sections without design justification
+- No nested card-in-card layouts
+- No low-contrast gray text on colored backgrounds
+- Verify clear typographic hierarchy (heading scale, weight contrast)
 
 ### 6. Visual Verification
 

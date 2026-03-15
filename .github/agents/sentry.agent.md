@@ -142,6 +142,50 @@ For every file in `files_modified`:
 - **Comment density:** Flag files where comments exceed 30% of total lines or where comments restate what code obviously does. (Hooks also check this, but verify proactively.)
 - **Indistinguishable Code:** Does the code look like a senior engineer wrote it, or does it have AI tells (excessive comments, unnecessary abstractions, boilerplate)?
 
+**Design Quality (UI phases only):**
+
+Flag these common AI-generated design anti-patterns:
+
+- Inter font used as default without intentional typographic choice
+- Purple/blue gradient hero sections (the "AI look")
+- Cards nested inside cards without clear hierarchy
+- Gray text on colored backgrounds with insufficient contrast
+- Missing typographic hierarchy (no clear heading scale or weight contrast)
+- Uniform spacing that ignores vertical rhythm
+- Generic placeholder copy left in components
+- Decorative elements that serve no functional purpose
+- Missing dark mode considerations when the project supports it
+- Touch targets below 44x44px on interactive elements
+
+Verify the implementer used the bundled atlas design skills during implementation:
+
+**Workflow skills (mandatory -- flag missing usage as MAJOR):**
+
+- `/frontend-design` should be loaded as the foundational design reference. It defines the anti-pattern vocabulary and design principles used by the other skills.
+- `/design-audit` should have been run to identify anti-patterns. Check if findings were addressed.
+- `/design-normalize` should have been run to align to the project's design system.
+- `/design-harden` should have been run for resilience against edge cases, i18n, and error states.
+- `/design-polish` should have been run as a final quality pass.
+
+**Advisory skills (conditional -- verify when task matches):**
+
+- `/design-critique` -- Verify usage when implementing new features or redesigns that need UX evaluation.
+- `/design-clarify` -- Verify usage when the task involves error messages, form labels, microcopy, or UX writing.
+- `/design-adapt` -- Verify usage when the task involves responsive design or cross-device adaptation.
+- `/design-optimize` -- Verify usage when the task involves performance-sensitive UI (large lists, heavy images, animations).
+- `/design-animate` -- Verify usage when the task involves adding motion, transitions, or micro-interactions.
+- `/design-extract` -- Verify usage when the task involves extracting reusable components or design tokens.
+- `/design-onboard` -- Verify usage when the task involves onboarding flows, empty states, or first-time experiences.
+- `/design-colorize` -- Verify usage when the task involves adding color to monochromatic interfaces.
+- `/design-bolder` -- Verify usage when the task involves amplifying visual impact of safe/boring designs.
+- `/design-quieter` -- Verify usage when the task involves toning down overly aggressive designs.
+
+These skills auto-load when the task matches their description, but if the anti-pattern checks above fail, the implementer should not have skipped them. Flag missing workflow skill usage as a MAJOR issue under "Quality Gates skipped." Flag missing advisory skill usage as a MINOR issue when the task clearly matched.
+
+**Security Review (all phases):**
+
+When reviewing code changes (any language), the `/security-review` skill provides systematic, OWASP-informed security analysis with confidence-based reporting. Use it to verify that workers traced data flow, checked framework mitigations, and only flagged high-confidence vulnerabilities.
+
 **Impact Analysis:**
 
 - Use `search/usages` to check if modified functions/classes are used elsewhere
@@ -157,6 +201,17 @@ For every major decision the implementer made, systematically challenge it:
 3. **Untested edge cases** -- What inputs or states were not covered by tests?
 4. **Simpler alternative** -- Is there a simpler approach the implementer missed?
 5. **Reinvention check** -- Did the implementer build something that an established package, library, or built-in API already provides? Use `context7/*` to check framework/runtime built-ins, then `exa/*` or `tavily/*` to search for well-maintained packages. If an existing solution covers >=80% of the use case, flag as MAJOR with the alternative.
+
+**Infrastructure Security (infra/devops phases only):**
+
+- Secrets in plaintext (env vars, config files, logs) -- must use secret managers or sealed secrets
+- Unpinned dependency/action versions (tags instead of SHA for GitHub Actions, `latest` tags for Docker)
+- Containers running as root without justification
+- Missing resource limits (CPU/memory) in Kubernetes manifests
+- Overly permissive IAM/RBAC policies (wildcard permissions)
+- Missing health checks or readiness probes
+- Unencrypted data in transit or at rest
+- Missing network policies or security groups
 
 Document findings in the Assumptions Challenged and Failure Modes sections of your report.
 
@@ -415,7 +470,7 @@ tool: `vscode/memory`
 
 ### Writing
 
-- **You own** `/memories/session/<task>sentry.md`. Use it to track your review progress and scratchpad notes across complex phases.
+- **You own** `/memories/session/<task>-sentry.md`. Use it to track your review progress and scratchpad notes across complex phases.
 - Your session file persists across **sentry** review loop iterations (**atlas** keeps it until the loop completes). When the loop ends, **atlas** deletes it. You do not delete this file yourself.
 - Write `/memories/repo/` distinct `.json` files for recurring issue patterns:
 - Format: `{"subject": "unsanitized user input", "fact": "Found in 3 reviews. Workers consistently miss input validation on form fields.", "citations": ["task-1-phase-2", "task-3-phase-1"], "reason": "Should be flagged as a reminder in future worker delegations", "category": "anti-pattern", "last_updated": "<time>", "by": "**sentry**"}`

@@ -1,0 +1,18 @@
+{
+  "name": "copilot-atlas",
+  "owner": {
+    "name": "vikshan"
+  },
+  "metadata": {
+    "description": "Atlas multi-agent orchestration system for GitHub Copilot",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "copilot-atlas",
+      "description": "Multi-agent orchestration system for GitHub Copilot -- planning, implementation, review, and commit through intelligent agent delegation",
+      "version": "1.0.0",
+      "source": "."
+    }
+  ]
+}

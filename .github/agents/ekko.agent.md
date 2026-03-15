@@ -1,5 +1,5 @@
 ---
-description: 'Backend and core logic implementation -- APIs, data pipelines, infrastructure, and server-side code'
+description: 'Backend and core logic implementation -- APIs, data pipelines, and server-side code'
 tools:
   [
     vscode/extensions,
@@ -15,6 +15,7 @@ tools:
     'exa/*',
     'supabase/*',
     'tavily/*',
+
     edit,
     search,
     web,
@@ -113,6 +114,8 @@ If the objective involves web-accessible features, API endpoints, or has potenti
 ---
 
 ## Skills
+
+When working with PostgreSQL, the `/postgres-patterns` skill provides performance, security, and operational patterns covering query optimization, connection management, RLS, schema design, concurrency, and monitoring. It auto-loads for database tasks.
 
 If you discover a reusable workflow pattern during implementation (e.g., a common test setup, a migration pattern, a deployment checklist), note it in your report's Deviations section. **atlas** can create a skill for it using `/create-skill`.
 
