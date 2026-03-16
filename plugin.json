@@ -1,15 +1,19 @@
 {
-  "name": "atlas-agents",
+  "name": "atlas",
   "description": "Multi-agent orchestration system for GitHub Copilot -- planning, implementation, review, and commit through intelligent agent delegation",
   "version": "1.0.0",
   "author": {
     "name": "vikshan",
     "url": "https://github.com/iamvikshan"
   },
+  "homepage": "https://github.com/iamvikshan/atlas",
   "repository": "https://github.com/iamvikshan/atlas",
   "license": "MIT",
   "keywords": ["orchestration", "multi-agent", "tdd", "code-review", "devops"],
-  "agents": ".github/agents/",
-  "skills": ".github/skills/",
-  "hooks": ".github/hooks/quality.json"
+  "category": "developer-tools",
+  "tags": ["vscode", "copilot", "plugin", "agents", "hooks", "mcp"],
+  "agents": "plugins/agents/",
+  "skills": "plugins/skills/",
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
 }
