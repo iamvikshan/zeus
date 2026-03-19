@@ -22,10 +22,10 @@ design work.
   alone.
 - Gather context in this order:
   1. Current instructions in the active thread.
-  2. `.impeccable.md`.
-  3. `teach-impeccable` (required on cold start).
+  2. `.atlas/design.md`.
+  3. `teach-design` (required on cold start).
 - Stop condition: if the required context is still missing, STOP and run
-  `teach-impeccable` first. Do not continue this skill until context is
+  `teach-design` first. Do not continue this skill until context is
   confirmed.
 - Additional context for this skill: performance constraints and motion
   sensitivity expectations.
@@ -208,14 +208,14 @@ Use appropriate techniques for each animation:
 element.animate(
   [
     { opacity: 0, transform: 'translateY(8px)' },
-    { opacity: 1, transform: 'translateY(0)' }
+    { opacity: 1, transform: 'translateY(0)' },
   ],
   {
     duration: 300,
     easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-    fill: 'both'
+    fill: 'both',
   }
-);
+)
 
 // Framework options:
 // - Framer Motion for React component choreography

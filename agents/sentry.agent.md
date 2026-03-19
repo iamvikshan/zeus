@@ -186,7 +186,7 @@ Verify the implementer used the bundled atlas design skills during implementatio
 - `/design-typeset` -- Verify usage when the task involves typographic hierarchy, readability, or expressive tone.
 - `/design-overdrive` -- Verify usage when the task involves intentionally high-impact visual direction and interaction energy.
 
-These skills may auto-load opportunistically when the task matches their description, but that is not guaranteed. Verify three things before flagging a miss:
+These skills are available as slash commands. They do not auto-load — workers must invoke them explicitly. Verify three things before flagging a miss:
 
 1. **availability:** the skill is present and installed for the current environment
 2. **invocation evidence:** task metadata, logs, audit entries, markers, or skill output files show it ran

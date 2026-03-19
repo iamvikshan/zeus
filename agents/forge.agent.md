@@ -130,6 +130,6 @@ If a tool is not available, note it as a deviation. Do not install tools unless 
 
 ## Skills
 
-When working with Terraform, the `/terraform-patterns` skill provides canonical patterns for file structure, naming, variables, outputs, version pinning, remote state, secrets, and module composition. It auto-loads for Terraform tasks.
+When working with Terraform, the `/terraform-patterns` skill provides canonical patterns for file structure, naming, variables, outputs, version pinning, remote state, secrets, and module composition. Invoke it explicitly when working on Terraform tasks.
 
 If you discover a reusable workflow pattern worth packaging as a skill, note it as a deviation in your report so **atlas** can evaluate it.

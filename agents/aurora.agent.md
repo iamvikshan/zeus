@@ -100,7 +100,7 @@ _Max 3 fix cycles. If still failing, note it in your report and move on._
 
 ### 5.5. Design Quality Gate
 
-Run the bundled atlas design skills against your UI output before visual verification. These skills auto-load when the task matches their description, and are also available as slash commands.
+Run the bundled atlas design skills against your UI output before visual verification. These skills are available as slash commands — invoke them explicitly when the task matches their description.
 
 **Workflow group (run every UI implementation, in order):**
 
@@ -126,7 +126,7 @@ Run the bundled atlas design skills against your UI output before visual verific
 - `/design-typeset` -- Improve typographic hierarchy, rhythm, readability, and expressive tone.
 - `/design-overdrive` -- Intensify visual direction and interaction energy while preserving usability and accessibility.
 
-The `/frontend-design` skill is the foundational design reference -- it creates distinctive, production-grade frontend interfaces with high design quality, generating creative, polished code that avoids generic AI aesthetics. It auto-loads for UI tasks and is referenced by the other design skills.
+The `/frontend-design` skill is the foundational design reference -- it creates distinctive, production-grade frontend interfaces with high design quality, generating creative, polished code that avoids generic AI aesthetics. Invoke it explicitly for UI tasks — it is referenced by the other design skills.
 
 **Manual anti-pattern checks** (always apply, regardless of skill availability):
 

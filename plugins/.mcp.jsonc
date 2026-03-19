@@ -1,4 +1,9 @@
 {
+  // NOTE: Plugin-level .mcp.json does NOT support "inputs" / "promptString" for
+  // credential prompting (VS Code by-design, see https://github.com/microsoft/vscode/issues/300260).
+  // The inputs below are retained for workspace-level fallback only.
+  // To enable context7, exa, and stitch-mcp,
+  // To enable: Copy this config to .vscode/mcp.json at workspace level where inputs work, or global mcp config.
   "inputs": [
     {
       "type": "promptString",

@@ -20,16 +20,16 @@ design work.
 
 - Design work must not proceed without confirmed context.
 - Required context includes: target audience, primary use cases, and brand
-   personality/tone.
+  personality/tone.
 - Context cannot be inferred from codebase structure or implementation details
-   alone.
+  alone.
 - Gather context in this order:
-   1. Current instructions in the active thread.
-   2. `.impeccable.md`.
-   3. `teach-impeccable` (required on cold start).
+  1.  Current instructions in the active thread.
+  2.  `.atlas/design.md`.
+  3.  `teach-design` (required on cold start).
 - Stop condition: if the required context is still missing, STOP and run
-   `teach-impeccable` first. Do not continue this skill until context is
-   confirmed.
+  `teach-design` first. Do not continue this skill until context is
+  confirmed.
 
 ## Diagnostic Scan
 

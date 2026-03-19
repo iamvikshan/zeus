@@ -40,8 +40,12 @@ Atlas bundles agents, hooks, skills, and MCP servers in one plugin. The plugin m
 >
 > `skills`, `MCPs`, and `agents` load with no issues, but bundled `hooks` currently have known-unidentified issues, likely related to VS Code agent plugins being in preview.
 >
-> 1. for `hooks` to work, `cmd + shift + p` -> `Preferences: Open User Settings (UI)` -> search `@id:chat.hookFilesLocations` -> `Add Item` -> `~/Library/Application Support/Code - Insiders/agentPlugins/github.com/iamvikshan/atlas/hooks/quality.json` or the equivalent path on your OS and VS Code.
->    this will work for local vscode but for codespaces, you have to manually copy the contents of `scripts/hooks/` to `~/.copilot/hooks`, atlas will find them but make sure `~/.copilot/hooks` is in the `chat.hookFilesLocations` setting.
+> for `hooks` to work, `cmd + shift + p` -> `Preferences: Open User Settings (UI)` -> search `@id:chat.hookFilesLocations` -> `Add Item` -> `~/Library/Application Support/Code - Insiders/agentPlugins/github.com/iamvikshan/atlas/hooks` or the equivalent path on your OS and VS Code.
+
+
+> [!NOTE]
+>
+> this will work for all local VS Code instances but for Codespaces, in addition to the above fix, you have to manually copy the contents of `scripts/hooks/` to workspace's `scripts/hooks/`.
 
 ---
 
@@ -143,7 +147,7 @@ Atlas ships with lifecycle hooks in `hooks/quality.json`.
 
 Atlas groups its bundled skills into a few practical buckets:
 
-- **Design foundation**: `frontend-design`
+- **Design foundation**: `frontend-design`, `teach-design`
 - **Design command discovery**: `design-help`
 - **Design review and polish**: `design-audit`, `design-polish`, `design-normalize`, `design-harden`, `design-critique`, `design-clarify`
 - **Adaptation and interaction**: `design-adapt`, `design-optimize`, `design-animate`, `design-extract`, `design-onboard`, `design-arrange`
@@ -151,7 +155,7 @@ Atlas groups its bundled skills into a few practical buckets:
 - **Typography and craft**: `design-typeset`
 - **Engineering**: `security-review`, `vibe-security`, `terraform-patterns`, `postgres-patterns`, `github-triage`
 
-Atlas design slash commands are: `/frontend-design`, `/design-help`, `/design-audit`, `/design-polish`, `/design-normalize`, `/design-harden`, `/design-critique`, `/design-clarify`, `/design-adapt`, `/design-optimize`, `/design-animate`, `/design-extract`, `/design-onboard`, `/design-colorize`, `/design-bolder`, `/design-quieter`, `/design-arrange`, `/design-typeset`, `/design-overdrive`.
+Atlas design slash commands are: `/frontend-design`, `/teach-design`, `/design-help`, `/design-audit`, `/design-polish`, `/design-normalize`, `/design-harden`, `/design-critique`, `/design-clarify`, `/design-adapt`, `/design-optimize`, `/design-animate`, `/design-extract`, `/design-onboard`, `/design-colorize`, `/design-bolder`, `/design-quieter`, `/design-arrange`, `/design-typeset`, `/design-overdrive`.
 
 For provenance and deeper integration notes, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 

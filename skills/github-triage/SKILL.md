@@ -6,10 +6,7 @@ description: >-
   triage report. Zero GitHub mutations -- never comments, labels, or closes.
 ---
 
-<!--
-  Inspired by oh-my-openagent's github-triage skill (code-yeongyu/oh-my-openagent).
-  Rewritten for the atlas multi-agent harness and VS Code Copilot tooling.
--->
+<!-- Rewritten for the atlas multi-agent harness and VS Code Copilot tooling. -->
 
 # GitHub Triage
 

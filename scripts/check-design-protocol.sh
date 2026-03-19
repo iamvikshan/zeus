@@ -165,7 +165,7 @@ check_critique_onboard_stop_guard() {
 
   for rel in "${targets[@]}"; do
     local file="${ROOT_DIR}/${rel}"
-    if ! grep -q 'STOP and run' "${file}" || ! grep -q 'teach-impeccable' "${file}"; then
+    if ! grep -q 'STOP and run' "${file}" || ! grep -q 'teach-design' "${file}"; then
       missing+=("${rel}")
     fi
   done

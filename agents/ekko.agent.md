@@ -116,7 +116,7 @@ If the objective involves web-accessible features, API endpoints, or has potenti
 
 ## Skills
 
-When working with PostgreSQL, the `/postgres-patterns` skill provides performance, security, and operational patterns covering query optimization, connection management, RLS, schema design, concurrency, and monitoring. It auto-loads for database tasks.
+When working with PostgreSQL, the `/postgres-patterns` skill provides performance, security, and operational patterns covering query optimization, connection management, RLS, schema design, concurrency, and monitoring. Invoke it explicitly when working on database tasks.
 
 If you discover a reusable workflow pattern during implementation (e.g., a common test setup, a migration pattern, a deployment checklist), note it in your report's Deviations section. **atlas** can create a skill for it using `/create-skill`.
 

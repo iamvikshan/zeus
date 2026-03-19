@@ -207,7 +207,7 @@ Use `/create-hook` to add project-specific lifecycle checks. Hook scripts in `sc
 
 ### Skills Mechanics
 
-Skills live under `skills/` and are auto-discovered by the plugin system.
+Skills live under `skills/` and are auto-discovered by the plugin system. Each skill becomes a slash command (e.g., `skills/design-audit/` → `/design-audit`). Agents invoke skills explicitly via these slash commands — skills do not auto-load based on task type.
 
 To package a reusable workflow:
 
@@ -217,13 +217,14 @@ To package a reusable workflow:
 
 ### Integrations and Provenance
 
-#### impeccable
+#### Design skill family
 
-The bundled `frontend-design` skill is adapted from [impeccable](https://github.com/pbakaus/impeccable) (Apache 2.0). It provides design guidance and the reference material used by **aurora** and **sentry** during UI work.
+The bundled `frontend-design` skill and its `design-*` companions are adapted from [impeccable](https://github.com/pbakaus/impeccable) (Apache 2.0). They provide design guidance and the reference material used by **aurora** and **sentry** during UI work. The `/teach-design` skill gathers project-specific design context into `.atlas/design.md`.
 
-The design skill family adapted from impeccable includes:
+The design skill family includes:
 
 - `/frontend-design`
+- `/teach-design`
 - `/design-help`
 - `/design-audit`
 - `/design-polish`
@@ -281,6 +282,16 @@ Agents with research capabilities follow this priority order:
 **tavily** -- AI-optimized search and research suited to synthesized answers and current-web context.
 
 **stitch-mcp** -- Google Stitch for rapid UI scaffolding, component generation, and layout templates. **aurora** treats this as a scaffold, not final output.
+
+### MCP Auth Limitation (Plugin-Scoped Servers)
+
+VS Code's plugin-level `.mcp.json` format does **not** support `inputs` / `promptString` for credential prompting ([microsoft/vscode #300260](https://github.com/microsoft/vscode/issues/300260), closed as by-design). HTTP MCP servers requiring credentials cannot auto-start — the user must manually start them from the Tools panel.
+
+**Current status**: context7, exa, and stitch-mcp are commented out in `plugins/.mcp.jsonc` because the `${input:...}` variables resolve to empty strings without the prompt flow.
+
+**Workarounds**:
+
+1. **User settings**: add credentials to your VS Code user settings or environment variables, bypassing the plugin-level config entirely.
 
 ### sequential-thinking Supported-Agent Matrix
 
