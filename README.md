@@ -26,7 +26,7 @@
 
 Install Atlas as a Copilot plugin.
 
-In VS Code (Insiders), open command pallet (Ctrl/Cmd+Shift+P) -> type "Chat: Open Customization (Preview) -> Plugins -> `+` icon, then enter the GitHub repository path `iamvikshan/atlas`.
+In VS Code (Insiders), open command palette (Ctrl/Cmd+Shift+P) -> type "Chat: Install Plugin from Source" -> then enter path `iamvikshan/atlas`.
 
 If you prefer the Copilot CLI install path, use:
 
@@ -34,7 +34,14 @@ If you prefer the Copilot CLI install path, use:
 copilot plugin install atlas
 ```
 
-Atlas bundles agents, hooks, skills, and MCP servers in one plugin. The plugin manifest is `plugin.json`, and bundled components live under `plugins/`.
+Atlas bundles agents, hooks, skills, and MCP servers in one plugin. The plugin manifest is `plugin.json`, and bundled components live under `/`.
+
+> [!WARNING]
+>
+> `skills`, `MCPs`, and `agents` load with no issues, but bundled `hooks` currently have known-unidentified issues, likely related to VS Code agent plugins being in preview.
+>
+> 1. for `hooks` to work, `cmd + shift + p` -> `Preferences: Open User Settings (UI)` -> search `@id:chat.hookFilesLocations` -> `Add Item` -> `~/Library/Application Support/Code - Insiders/agentPlugins/github.com/iamvikshan/atlas/hooks/quality.json` or the equivalent path on your OS and VS Code.
+>    this will work for local vscode but for codespaces, you have to manually copy the contents of `scripts/hooks/` to `~/.copilot/hooks`, atlas will find them but make sure `~/.copilot/hooks` is in the `chat.hookFilesLocations` setting.
 
 ---
 
@@ -120,7 +127,7 @@ Atlas proceeds phase-by-phase without stopping, auto-committing after review pas
 
 ## Hooks
 
-Atlas ships with lifecycle hooks in `hooks/hooks.json`.
+Atlas ships with lifecycle hooks in `hooks/quality.json`.
 
 - Session lifecycle hooks initialize context, preserve state before compaction, and warn about loose ends at stop time.
 - Prompt and tool guard hooks catch Autopilot triggers, read-before-edit violations, and comment-density regressions.
@@ -137,12 +144,14 @@ Atlas ships with lifecycle hooks in `hooks/hooks.json`.
 Atlas groups its bundled skills into a few practical buckets:
 
 - **Design foundation**: `frontend-design`
+- **Design command discovery**: `design-help`
 - **Design review and polish**: `design-audit`, `design-polish`, `design-normalize`, `design-harden`, `design-critique`, `design-clarify`
-- **Adaptation and interaction**: `design-adapt`, `design-optimize`, `design-animate`, `design-extract`, `design-onboard`
-- **Visual direction**: `design-colorize`, `design-bolder`, `design-quieter`
-- **Engineering**: `security-review`, `terraform-patterns`, `postgres-patterns`, `github-triage`
+- **Adaptation and interaction**: `design-adapt`, `design-optimize`, `design-animate`, `design-extract`, `design-onboard`, `design-arrange`
+- **Visual direction**: `design-colorize`, `design-bolder`, `design-quieter`, `design-overdrive`
+- **Typography and craft**: `design-typeset`
+- **Engineering**: `security-review`, `vibe-security`, `terraform-patterns`, `postgres-patterns`, `github-triage`
 
-Most of the design skills are available as slash commands, including `/design-audit`, `/design-polish`, `/design-harden`, and `/design-adapt`.
+Atlas design slash commands are: `/frontend-design`, `/design-help`, `/design-audit`, `/design-polish`, `/design-normalize`, `/design-harden`, `/design-critique`, `/design-clarify`, `/design-adapt`, `/design-optimize`, `/design-animate`, `/design-extract`, `/design-onboard`, `/design-colorize`, `/design-bolder`, `/design-quieter`, `/design-arrange`, `/design-typeset`, `/design-overdrive`.
 
 For provenance and deeper integration notes, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -150,7 +159,7 @@ For provenance and deeper integration notes, see [`docs/ARCHITECTURE.md`](docs/A
 
 ## Bundled MCP servers
 
-Atlas ships with 5 MCP servers configured in `.mcp.json`.
+Atlas ships with 5 MCP servers configured in `plugins/.mcp.jsonc`.
 
 > [!NOTE]
 >
@@ -167,7 +176,7 @@ Bundled servers:
 
 | Server                  | Setup required             | Where to get it                                         |
 | ----------------------- | -------------------------- | ------------------------------------------------------- |
-| **context7**            | None in the bundled config | --                                                      |
+| **context7**            | API key (optional)         | [context7.com/dashboard](https://context7.com/dashboard) |
 | **sequential-thinking** | None                       | --                                                      |
 | **exa**                 | Exa API key                | [dashboard.exa.ai](https://dashboard.exa.ai)            |
 | **tavily**              | Tavily API key             | [app.tavily.com](https://app.tavily.com)                |
@@ -184,10 +193,11 @@ plugin.json              -- Plugin manifest
 README.md                -- User-facing overview and setup
 docs/
   ARCHITECTURE.md        -- Internal mechanics and contributor reference
-plugins/
+/
   agents/                -- Agent definitions
   hooks/                 -- Hook configuration
-  mcp.json               -- Bundled MCP server configuration
+  plugins/
+    .mcp.json            -- Bundled MCP server configuration
   skills/                -- Bundled skills
 scripts/
   git.sh                 -- Git helpers
@@ -199,6 +209,6 @@ scripts/
 ## Further reading
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) -- routing, validation, review loops, memory, hooks, MCP details
-- `plugins/agents/` -- agent definitions
-- `plugins/skills/` -- bundled skills
-- `.mcp.json` -- bundled MCP configuration
+- `agents/` -- agent definitions
+- `skills/` -- bundled skills
+- `plugins/.mcp.jsonc` -- bundled MCP configuration

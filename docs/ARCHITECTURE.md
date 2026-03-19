@@ -27,22 +27,22 @@ atlas (conductor) <--handoff--> prometheus (planner)
 
 ### User-Facing Agents
 
-| Agent          | File                                 | Model                     | Role                                                                                                                                                                                                                       |
-| -------------- | ------------------------------------ | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **atlas**      | `plugins/agents/atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. May apply trivial single-file quick fixes after review by **sentry**. Never writes multi-file code. |
-| **prometheus** | `plugins/agents/prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults **metis** PRE_PLAN, drafts phased plans, validates iteratively with **metis** VALIDATE, then hands approved plans back to **atlas**. Never writes implementation code.          |
+| Agent          | File                         | Model                     | Role                                                                                                                                                                                                                       |
+| -------------- | ---------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **atlas**      | `agents/atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. May apply trivial single-file quick fixes after review by **sentry**. Never writes multi-file code. |
+| **prometheus** | `agents/prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults **metis** PRE_PLAN, drafts phased plans, validates iteratively with **metis** VALIDATE, then hands approved plans back to **atlas**. Never writes implementation code.          |
 
 ### Subagents
 
-| Agent      | File                             | Model                       | Role                                                                                                      |
-| ---------- | -------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **ekko**   | `plugins/agents/ekko.agent.md`   | Claude Opus 4.6 (copilot)   | Backend/core implementer. Strict TDD, Write-Guard, Comment Discipline, Indistinguishable Code.            |
-| **aurora** | `plugins/agents/aurora.agent.md` | GPT-5.4 (copilot)           | Frontend/UI implementer. TDD, accessibility-first, visual verification, stitch-mcp scaffolding.           |
-| **forge**  | `plugins/agents/forge.agent.md`  | Claude Opus 4.6 (copilot)   | DevOps/infra implementer. CI/CD, containers, cloud, monitoring, deployment automation. Security-first.    |
-| **sentry** | `plugins/agents/sentry.agent.md` | GPT-5.4 (copilot)           | Code reviewer. Adversarial analysis, security, correctness, and requirement validation. Never edits code. |
-| **oracle** | `plugins/agents/oracle.agent.md` | Claude Sonnet 4.6 (copilot) | Researcher. Structured findings, convention discovery, external docs, skills recommendations.             |
-| **killua** | `plugins/agents/killua.agent.md` | Claude Haiku 4.5 (copilot)  | Scout. Ultra-fast file discovery, dependency mapping, read-only exploration.                              |
-| **metis**  | `plugins/agents/metis.agent.md`  | Claude Sonnet 4.6 (copilot) | Plan validator. PRE_PLAN for pre-planning analysis, VALIDATE for plan validation.                         |
+| Agent      | File                     | Model                       | Role                                                                                                      |
+| ---------- | ------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **ekko**   | `agents/ekko.agent.md`   | Claude Opus 4.6 (copilot)   | Backend/core implementer. Strict TDD, Write-Guard, Comment Discipline, Indistinguishable Code.            |
+| **aurora** | `agents/aurora.agent.md` | GPT-5.4 (copilot)           | Frontend/UI implementer. TDD, accessibility-first, visual verification, stitch-mcp scaffolding.           |
+| **forge**  | `agents/forge.agent.md`  | Claude Opus 4.6 (copilot)   | DevOps/infra implementer. CI/CD, containers, cloud, monitoring, deployment automation. Security-first.    |
+| **sentry** | `agents/sentry.agent.md` | GPT-5.4 (copilot)           | Code reviewer. Adversarial analysis, security, correctness, and requirement validation. Never edits code. |
+| **oracle** | `agents/oracle.agent.md` | Claude Sonnet 4.6 (copilot) | Researcher. Structured findings, convention discovery, external docs, skills recommendations.             |
+| **killua** | `agents/killua.agent.md` | Claude Haiku 4.5 (copilot)  | Scout. Ultra-fast file discovery, dependency mapping, read-only exploration.                              |
+| **metis**  | `agents/metis.agent.md`  | Claude Sonnet 4.6 (copilot) | Plan validator. PRE_PLAN for pre-planning analysis, VALIDATE for plan validation.                         |
 
 ### Delegation Rules
 
@@ -176,7 +176,7 @@ In Autopilot mode, **atlas** runs a bounded review loop:
 
 ## Hooks Details
 
-Hooks are shipped via `hooks/hooks.json` and cover the agent lifecycle.
+Hooks are shipped via `hooks/quality.json` and cover the agent lifecycle.
 
 ### Hook Scripts
 
@@ -194,7 +194,7 @@ Hooks are shipped via `hooks/hooks.json` and cover the agent lifecycle.
 
 - PreToolUse/PostToolUse hooks fire for the active agent's own tool calls
 - Subagent edits are not covered the same way; workers enforce these rules proactively
-- On plugin install, relative paths resolve automatically from `hooks/hooks.json`
+- On plugin install, relative paths resolve automatically from `hooks/quality.json`
 - For per-project use, copy the hook config into `.github/hooks/quality.json` and copy `scripts/hooks/` into the target repo
 
 ### Creating New Hooks
@@ -207,7 +207,7 @@ Use `/create-hook` to add project-specific lifecycle checks. Hook scripts in `sc
 
 ### Skills Mechanics
 
-Skills live under `plugins/skills/` and are auto-discovered by the plugin system.
+Skills live under `skills/` and are auto-discovered by the plugin system.
 
 To package a reusable workflow:
 
@@ -223,6 +223,8 @@ The bundled `frontend-design` skill is adapted from [impeccable](https://github.
 
 The design skill family adapted from impeccable includes:
 
+- `/frontend-design`
+- `/design-help`
 - `/design-audit`
 - `/design-polish`
 - `/design-normalize`
@@ -237,6 +239,9 @@ The design skill family adapted from impeccable includes:
 - `/design-colorize`
 - `/design-bolder`
 - `/design-quieter`
+- `/design-arrange`
+- `/design-typeset`
+- `/design-overdrive`
 
 #### forge origin
 
@@ -267,7 +272,7 @@ Agents with research capabilities follow this priority order:
 
 ### MCP Server Details
 
-**context7** -- up-to-date library documentation for LLMs. The bundled plugin config does not require or prompt for an API key.
+**context7** -- up-to-date library documentation for LLMs. The bundled plugin config prompts for an optional API key (from [context7.com/dashboard](https://context7.com/dashboard)) for higher rate limits and private repo access.
 
 **sequential-thinking** -- structured multi-step reasoning scaffold used by reasoning-heavy agents for architectural decisions and multi-constraint analysis.
 
