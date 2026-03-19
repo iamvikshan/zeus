@@ -78,19 +78,19 @@ On first use:
 ```text
 User
   |
-  v
-atlas (conductor) <--handoff--> prometheus (planner)
+  +---> prometheus (planner)
+  +---> atlas (conductor)
+  |      +---> ekko (backend)
+  |      +---> aurora (frontend)
+  |      +---> forge (infra)
+  |      +---> sentry (reviewer)
+  |      +---> oracle (research)
+  |      +---> killua (scout)
+  |      +---> metis (validator)
   |
-  +---> ekko (backend)
-  +---> aurora (frontend)
-  +---> forge (infra)
-  +---> sentry (reviewer)
-  +---> oracle (research)
-  +---> killua (scout)
-  +---> metis (validator)
 ```
 
-Atlas is the conductor. Prometheus handles deep planning. The remaining agents are specialized workers or reviewers.
+Atlas and Prometheus are both user-facing. Atlas handles execution. Prometheus handles deep planning when the user opens it manually. In Normal mode, Atlas can stop with a Prometheus handoff packet. In ULW/YOLO mode, Atlas plans locally and continues.
 
 For routing rules, review loops, memory behavior, and MCP details, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -101,7 +101,7 @@ For routing rules, review loops, memory behavior, and MCP details, see [`docs/AR
 | Agent          | Primary role    | Use it for                                            |
 | -------------- | --------------- | ----------------------------------------------------- |
 | **atlas**      | Conductor       | Routing work, managing phases, and presenting results |
-| **prometheus** | Planner         | Breaking large tasks into validated phases            |
+| **prometheus** | Planner         | Deep planning when Atlas asks the user to open it     |
 | **ekko**       | Backend worker  | APIs, logic, data, and server-side changes            |
 | **aurora**     | Frontend worker | UI, styling, accessibility, and interaction work      |
 | **forge**      | Infra worker    | CI/CD, cloud, containers, and deployment automation   |
@@ -116,11 +116,11 @@ For routing rules, review loops, memory behavior, and MCP details, see [`docs/AR
 
 ### Normal mode
 
-Atlas pauses between approved phases so the user can accept, pause, or request revisions.
+Atlas pauses between approved phases so the user can accept, pause, or request revisions. If a task needs deep planning, Atlas prepares context and a copyable prompt for the user to paste into `@prometheus`.
 
 ### Autopilot mode
 
-Atlas proceeds phase-by-phase without stopping, auto-committing after review passes.
+Atlas proceeds phase-by-phase without stopping, auto-committing after review passes. If a task would normally require Prometheus, Atlas plans locally and continues through its own validation flow.
 
 > [!WARNING]
 >

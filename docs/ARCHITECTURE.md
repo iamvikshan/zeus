@@ -8,29 +8,29 @@ Use `README.md` for installation, first-run setup, bundled capabilities, and day
 
 ## System Model
 
-The system uses a flat conductor-delegate pattern. Two user-facing agents handle interaction and planning. **atlas** directly manages execution by delegating to specialized workers.
+The system uses a flat conductor-delegate pattern. Two user-facing agents handle interaction and planning. **atlas** directly manages execution by delegating to specialized workers. **prometheus** is also user-facing; Atlas does not delegate to it.
 
 ```text
 User
   |
-  v
-atlas (conductor) <--handoff--> prometheus (planner)
+  +---> atlas (conductor)
+  |      +---> ekko (backend)      -- writes server/logic code
+  |      +---> aurora (frontend)   -- writes UI code
+  |      +---> forge (infra)       -- writes CI/CD, containers, cloud, monitoring
+  |      +---> sentry (reviewer)   -- reviews all changes (adversarial)
+  |      +---> oracle (researcher) -- gathers context
+  |      +---> killua (scout)      -- fast file discovery
+  |      +---> metis (validator)   -- validates plans (dual-mode)
   |
-  +---> ekko (backend)      -- writes server/logic code
-  +---> aurora (frontend)   -- writes UI code
-  +---> forge (infra)       -- writes CI/CD, containers, cloud, monitoring
-  +---> sentry (reviewer)   -- reviews all changes (adversarial)
-  +---> oracle (researcher) -- gathers context
-  +---> killua (scout)      -- fast file discovery
-  +---> metis (validator)   -- validates plans (dual-mode)
+  +---> prometheus (planner)
 ```
 
 ### User-Facing Agents
 
-| Agent          | File                         | Model                     | Role                                                                                                                                                                                                                       |
-| -------------- | ---------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **atlas**      | `agents/atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. May apply trivial single-file quick fixes after review by **sentry**. Never writes multi-file code. |
-| **prometheus** | `agents/prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults **metis** PRE_PLAN, drafts phased plans, validates iteratively with **metis** VALIDATE, then hands approved plans back to **atlas**. Never writes implementation code.          |
+| Agent          | File                         | Model                     | Role                                                                                                                                                                                                                                             |
+| -------------- | ---------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **atlas**      | `agents/atlas.agent.md`      | Claude Opus 4.6 (copilot) | Conductor. Routes tasks via IntentGate, delegates to workers directly, manages review loops, spot-checking, and todos. May apply trivial single-file quick fixes after review by **sentry**. Never writes multi-file code.                       |
+| **prometheus** | `agents/prometheus.agent.md` | Claude Opus 4.6 (copilot) | Planner. Researches requirements, consults **metis** PRE_PLAN, drafts phased plans, validates iteratively with **metis** VALIDATE, then presents the approved plan to the user for manual return to **atlas**. Never writes implementation code. |
 
 ### Subagents
 
@@ -109,6 +109,14 @@ Used by both **prometheus** and **atlas** to validate plans. It checks:
 - Alignment with Atlas operating rules
 
 If validation fails, the plan enters a revision loop. If it fails repeatedly, the issue is surfaced back to the user through structured choices.
+
+### Manual Planning Handoff
+
+Because VS Code does not support nested delegation back into another user-facing agent, **atlas** never invokes **prometheus** directly.
+
+- In **Normal mode**, **atlas** writes `/memories/session/<task>-prometheus.md`, explains why deep planning is needed, and gives the user a copyable prompt for `@prometheus`.
+- **prometheus** reads that context if present, performs research and validation, writes the plan, and ends with a copyable prompt for the user to paste back into `@atlas`.
+- In **ULW/YOLO mode**, **atlas** keeps planning in-process and runs its own Metis validation loop instead of routing to **prometheus**.
 
 ---
 
