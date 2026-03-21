@@ -114,8 +114,8 @@ If validation fails, the plan enters a revision loop. If it fails repeatedly, th
 
 Because VS Code does not support nested delegation back into another user-facing agent, **atlas** never invokes **prometheus** directly.
 
-- In **Normal mode**, **atlas** writes `/memories/session/<task>-prometheus.md`, explains why deep planning is needed, and gives the user a copyable prompt for `@prometheus`.
-- **prometheus** reads that context if present, performs research and validation, writes the plan, and ends with a copyable prompt for the user to paste back into `@atlas`.
+- In **Normal mode**, **atlas** asks the user whether deep planning with **prometheus** is needed. If the user accepts, **atlas** writes a prometheus delegation section in the session ledger and gives the user a copyable prompt for `@prometheus`. If the user declines, **atlas** self-plans with its Metis validation loop.
+- **prometheus** reads the ledger context if present, performs research and validation, writes the plan, updates its ledger section, and ends with a copyable prompt for the user to paste back into `@atlas`.
 - In **ULW/YOLO mode**, **atlas** keeps planning in-process and runs its own Metis validation loop instead of routing to **prometheus**.
 
 ---
@@ -349,13 +349,24 @@ When `workbench.browser.enableChatTools` is enabled, agents use built-in browser
 
 ## Memory System
 
-### Session Memory
+### Session Ledger (`/memories/session/<task>.md`)
 
-- **atlas** writes `<task>-atlas.md` for orchestration state recovery after context compaction
-- Subagents may use private scratchpad files during execution
-- If a scratchpad has no transfer value, the subagent deletes it before returning
-- If it has relevant context, **atlas** reads it, extracts what it needs, and deletes it immediately
-- **metis** and **sentry** session files can persist until their review loops complete
+One living file per task shared by all agents. Replaces the previous per-agent session file model.
+
+- **Atlas** creates the ledger at task start and writes: task name, mode, objective, plan link, and delegation blocks.
+- **Workers** (ekko, aurora, forge) read the full ledger on start and update their own delegation section with brief progress.
+- **Prometheus** reads the ledger for atlas-prepared context and updates its own section with plan location.
+- **Reviewers** (sentry, metis) read the task objective and their review delegation section. They do not write to the ledger.
+- **Read-only agents** (oracle, killua) read relevant ledger sections for context. They do not write to the ledger.
+- Atlas deletes the ledger during the final completion/archive flow.
+
+### Scratchpads
+
+Agents may create ephemeral scratchpads at `/memories/session/scratch-<agent>-*` (any extension) for private working notes.
+
+- Workers, oracle, killua, prometheus: delete own scratchpads before returning.
+- Sentry, metis: scratchpads persist across review loop iterations; atlas deletes after loop completes.
+- Atlas: may use scratchpads at `/memories/session/scratch-atlas-*`; deletes during completion flow.
 
 ### Repository Memory
 
